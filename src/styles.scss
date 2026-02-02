@@ -1,2 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
+/* 1. Essential Sass imports first */
+@use '@angular/material' as mat;
+
+/* 2. Tailwind v4 with layer syntax to bypass the @import warning */
+@import "tailwindcss" layer(tailwindcss);
+
+/* 3. Your Tailwind Theme Variables */
+@theme {
+  --color-brand: #007bff;
+}
+
+/* 4. Angular Material Theme Configuration */
+@include mat.core();
+
+$theme: mat.define-theme((
+  color: (
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  )
+));
+
+/* 5. Apply the theme to all components */
+@include mat.all-component-themes($theme);

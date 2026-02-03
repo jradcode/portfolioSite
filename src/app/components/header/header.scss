@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.material-icons {
+  // Ensures the icon sits nicely next to the text
+  display: inline-flex;
+  vertical-align: middle;
+  line-height: 1;
+}

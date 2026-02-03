@@ -1,1 +1,30 @@
-<p>header works!</p>
+<header class="w-full bg-slate-700 text-slate-100 py-10 shadow-lg">
+  <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    
+    <div class="text-center md:text-left">
+      <h1 class="text-3xl font-bold tracking-tight text-white">{{ name() }}</h1>
+      <p class="text-slate-400 font-medium uppercase text-xs mt-1 tracking-widest">
+        {{ appName() }}
+      </p>
+    </div>
+
+    <div class="text-center md:text-left">
+      <h1 class="text-3xl font-bold tracking-tight text-white">{{ position() }}</h1>
+    </div>
+
+    <div class="flex flex-col md:items-end gap-2">
+      <a [href]="'mailto:' + email()" 
+         class="flex items-center gap-2 text-slate-300 hover:text-blue-400 transition-colors">
+        <i class="material-icons text-lg">email:</i>
+        <span class="text-sm">{{ email() }}</span>
+      </a>
+      <a [href]="linkedin()" 
+         target="_blank" 
+         class="flex items-center gap-2 text-slate-300 hover:text-blue-400 transition-colors">
+        <i class="material-icons text-lg">linkedin:</i>
+        <span class="text-sm">{{ linkedin() }}</span>
+      </a>
+    </div>
+
+  </div>
+</header>

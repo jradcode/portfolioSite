@@ -1,2 +1,29 @@
-<h1 class="text-3xl font-bold">Welcome to my Portfolio</h1>
-<p>This is where my project gallery will go.</p>
+<div class="min-h-screen bg-slate-50">
+
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    
+    <div class="relative mb-10 pb-2">
+  <h1 class="text-3xl md:text-4xl font-bold text-black pb-3">
+    Projects
+  </h1>
+  
+  <div class="absolute bottom-0 left-0 w-32 h-1 bg-gradient-to-r from-blue-600 to-transparent"></div>
+</div>
+
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
+      @for (item of projects(); track item.id) {
+        
+        @defer (on viewport) {
+          <app-project-card [project]="item"></app-project-card>
+        } @placeholder {
+          <div class="h-80 w-full animate-pulse rounded-xl bg-slate-200"></div>
+        }
+
+      } @empty {
+        <p class="text-slate-500 italic">No projects found.</p>
+      }
+    </div>
+
+  </main>
+</div>

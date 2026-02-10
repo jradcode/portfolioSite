@@ -1,18 +1,16 @@
 import { Component, signal } from '@angular/core';
-import { MOCK_PROJECTS } from '../src/app/data/mock-projects';
-import { Project } from '../src/app/models/project.model';
+import { MOCK_PROJECTS } from '../../data/mock-projects';
+import { Project } from '../../models/project.model';
+import { projectCard } from '../../components/project-card/project-card';
 
 @Component({
   selector: 'app-home',
-  template: `
-    <div class="project-grid">
-      @for (item of projects(); track item.id) {
-        <app-project-card [project]="item" />
-      }
-    </div>
-  `
+  standalone: true,
+  imports: [projectCard],
+  templateUrl: './home.html',
+  styleUrl: './home.scss'
 })
-export class HomeComponent {
+export class home {
   // Using a Signal to store your projects
   projects = signal<Project[]>(MOCK_PROJECTS);
 }

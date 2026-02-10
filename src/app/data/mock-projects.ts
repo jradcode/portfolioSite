@@ -20,9 +20,9 @@ export const MOCK_PROJECTS: Project[] = [
     name: "change_csv_file",
     description: "A simple python 3 command line app that converts a CSV file into a organized data file.",
     images: [
-      "assets/images/project2-start",
-      "assets/images/project2-use.jpg",
-      "assets/images/project2-results.jpg"
+      "assets/images/project2-start.png",
+      "assets/images/project2-use.png",
+      "assets/images/project2-results.png"
     ],
     githubUrl: "https://github.com/jradcode/change_csv_file",
     technologies: ["Python 3", "CSV", "command line", "data-science"]
@@ -32,11 +32,11 @@ export const MOCK_PROJECTS: Project[] = [
     name: "video-game-tracker",
     description: "A CRUD app to track video games you passed.",
     images: [
-      "assets/images/project3-home",
-      "assets/images/project3-details",
+      "assets/images/project3-home.jpg",
+      "assets/images/project3-details.jpg",
       "assets/images/project3-form.jpg"
     ],
     githubUrl: "https://github.com/jradcode/video-game-tracker",
-    technologies: ["React.js", "Express.js", "JavaScript", "complex-data"] //change the project to the react one
+    technologies: ["React.js", "Express.js", "JavaScript", "Pillow"] //change the project to the react one
   }
 ];

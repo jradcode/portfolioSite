@@ -7,9 +7,10 @@ export const MOCK_PROJECTS: Project[] = [
     description: "A simple CRUD name tag app where you enter a fullName and age.",
    
     images: [
-      "assets/images/project1-home.jpg",
-      "assets/images/project1-person-form.jpg",
-      "assets/images/project1-card.jpg"
+      "assets/images/personAppHomePage.png",
+      "assets/images/personAppAddForm.png",
+      "assets/images/personAppEditForm.png",
+      "assets/images/personAppAboutPage.png"
     ],
     githubUrl: "https://github.com/jradcode/person-app",
     technologies: ["Angular 19", "Tailwind", "Express.js", "Typescript", "JavaScript", "Prisma", "Postgres", "Neon"]
@@ -17,15 +18,15 @@ export const MOCK_PROJECTS: Project[] = [
 
   {
    id: 2,
-    name: "change_csv_file",
-    description: "A simple python 3 command line app that converts a CSV file into a organized data file.",
+    name: "portfolioSite",
+    description: "A simple portfolio website that showcases my projects in a card carousel format and displays my resume and a about page.",
     images: [
-      "assets/images/project2-start.png",
-      "assets/images/project2-use.png",
-      "assets/images/project2-results.png"
+      "assets/images/portfolioSiteHomePage.png",
+      "assets/images/portfolioSiteResumePage.png",
+      "assets/images/portfolioSiteAboutPage.png"
     ],
-    githubUrl: "https://github.com/jradcode/change_csv_file",
-    technologies: ["Python 3", "CSV", "command line", "data-science"]
+    githubUrl: "https://github.com/jradcode/portfolioSite",
+    technologies: ["Angular 21", "TypeScript", "Tailwind", "HTML", "C# ASP.NET Core 10", "EF Core", "Postgres DB", "Neon"]
   },
   {
      id: 3,

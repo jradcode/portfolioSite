@@ -1,5 +1,6 @@
 import { Component, input, signal } from '@angular/core';
 import { Project } from '../../models/project.model'; // Adjust path if needed
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-project-card',

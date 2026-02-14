@@ -1,0 +1,17 @@
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.scan-line {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, transparent, #3b82f6, transparent);
+  position: absolute;
+  z-index: 15;
+  display: none;
+}
+.group:hover .scan-line {
+  display: block;
+  animation: scan 1.5s ease-in-out infinite;
+}

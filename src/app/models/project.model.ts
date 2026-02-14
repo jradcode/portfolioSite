@@ -5,4 +5,11 @@ export interface Project {
   images: string[];   //images of various pages of project in carasel html format
   githubUrl: string; //link to the specific github repo of project
   technologies: string[]; //list of technologies used in project
+  
+  // New section for the Details Page
+  narrative?: {
+    backStory: string;    // "wanted to..."
+    designPhilosophy: string; // "I used Tailwind because..."
+    technicalChallenges: string; // "Solving the C# integration was..."
+  };
 }

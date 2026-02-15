@@ -1,0 +1,37 @@
+/* 1. The Core Animation Timing */
+::view-transition-group(root) {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 2. Fix the Hero Image "Morph" */
+/* This ensures the image doesn't squash or stretch as it changes size */
+[style*="view-transition-name"] {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+/* 3. The Materialize Zoom Overlay */
+/* Make the zoom-in background match your slate-950 theme */
+#materialbox-overlay {
+  background-color: rgba(2, 6, 23, 0.9) !important; 
+  backdrop-filter: blur(12px);
+}
+
+/* 4. Smooth out the 'Old' page fading out */
+::view-transition-old(root) {
+  animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}

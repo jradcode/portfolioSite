@@ -37,7 +37,7 @@ export const MOCK_PROJECTS: Project[] = [
      narrative: {
       backStory: "I delayed this project for a long time. I was still building other projects to fill my portfolio. I took long breaks to focus on other studies and worked survival jobs. I had long been trying to figure out how I should design this and what technologies I should use. I wanted a website or something to show off my work and expand it later for future clients or employers and to showcase my finished project. I wanted this to be like a journal of sorts.",
       designPhilosophy: "I wanted something simple, so I went with a image gallery or carousel instead of video as videos would take too much resources as I was just starting out and did'nt want to spend a fortune on cloud computing and data. I took a Tailwind and Materialize dark theme as I thought it would he easier to see yet look stylish. This project was design to expand if I wanted to scale my hobby into a larger business. I also wanted it to be easier to add more projects rather than hard coding things in. I wanted a simple admin authentication system so only I can add projects. I also wanted to show off projects that were private that I intended to sell that intended to be my IP.",
-      technicalChallenges: "The design I wanted was hard. It took me awhile to figure out how I should structure how I should show off my projects. I need to study other portfolios and also get more experience in web development. For a long time I worked on projectd before AI and now AI can give me suggestions or template pages for me so I can focus on  architecture and actually finishing projects. Dealing with images and processing them was hard for me, especially storing it in the backend."
+      technicalChallenges: "The design I wanted was hard. It took me awhile to figure out how I should structure how I should show off my projects. I need to study other portfolios and also get more experience in web development. For a long time I worked on projects before AI and now AI can give me suggestions or template pages for me so I can focus on  architecture and actually finishing projects. Dealing with images and processing them was hard for me, especially storing it in the backend."
     }
   },
   {
@@ -55,9 +55,9 @@ export const MOCK_PROJECTS: Project[] = [
     technologies: ["Python", "Flask", "pipenv", "jinja2", "CSS", "HTML",], //change the project to the react one
 
     narrative: {
-      backStory: "",
-      designPhilosophy: "",
-      technicalChallenges: ""
+      backStory: "I started this app because I had an old car that was in an accident, and I wanted to restore it. I had to research and learn car repair and automotive and to help me learn the various vehicle systems I wanted to create mechanic tracker that tracks the parts and problems with the car. I split it into systems like engine, brakes, suspension, transmission etc.",
+      designPhilosophy: "I wanted a comprehensive app that covers as many systems and parts of the car as possible. I focus on 1 car first then maybe later expend it to different cars. However it would be a huge app so I wanted to generalize and appeal to older used cars as they need the most work. I do want to expand the UI to use angular or react as right now it is using the jinja2 template language. I might want to switch  the backend to use Golang instead of Python Flask. Later on I was thinking of turning it into a mobile app.",
+      technicalChallenges: "The data would be huge as there's thousands of parts for a car. I needed to do much research and focus on 1 car to make it manageable. The main challenge is how big and complex the data structure will be and how much I'm willing to expand this app."
     }
   }
 ];

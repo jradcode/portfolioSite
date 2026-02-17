@@ -2,7 +2,7 @@
 
 <app-navbar></app-navbar>
 
-<main class="container mx-auto px-4 py-12">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
   <router-outlet></router-outlet>
   
   <div class="mt-20 text-center text-slate-400 italic text-sm">
@@ -43,13 +43,14 @@
     -->
 
     <!-- To Do:
-    Already linked project-cards to detail page. I added a narrative data to my model to expand the details page and showcase the projects. Now
-    I need to finish up the last project's mock data. Then I want to change the design a little on the detail page to me more consist. Or I can try other styles.
+  
 
-    make the site mobile and tablet friendly (it kind of already is but I haven't tested all the pages)
+    Made all the pages tablet and mobile friendly and fixed the header
+    decide to save the CRUD and Auth stuff after until i build the backend. AI recommends it but for auth I should use JWT tokens
+
+    next I should build the frontend angular api service
+
     try an image processor like pillow to make images look better when resizing (angular has a builtin image processor)
-    refine header by deleting the linked-in shit and email in header. maybe use icons links instead or move it elsewhere (like at navbar)
-    start the write of the frontend angular API in services folder
     start the .net core 10 backend
     integrate that backend with ef core and nen cloud database
     add further functionality for the app to make it easier to add a project use CRUD inside portfolioSite

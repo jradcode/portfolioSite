@@ -13,7 +13,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
       
-      @for (item of projects(); track item.id) {
+     @for (item of projectService.projects(); track item.id) {
         
         @defer (on viewport) {
           <app-project-card [project]="item" class="h-full"></app-project-card>

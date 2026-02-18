@@ -15,27 +15,26 @@ export class ProjectService {
   projects = signal<Project[]>([]);
   loading = signal<boolean>(false);
 
-  loadProjects(): Observable<Project[]> {
-    this.loading.set(true);
+ loadProjects(): Observable<Project[]> {
+  this.loading.set(true);
 
-    // If useMockData is true, we stay local. If false, we hit the C# API.
-    const request$ = environment.useMockData 
-      ? of(MOCK_PROJECTS) 
-      : this.http.get<Project[]>(this.apiUrl);
-
-    return request$.pipe(
-      tap(data => {
-        this.projects.set(data);
-        this.loading.set(false);
-      }),
-      catchError(err => {
-        console.error('Connection failed. Falling back to mocks.', err);
-        this.projects.set(MOCK_PROJECTS);
-        this.loading.set(false);
-        return of(MOCK_PROJECTS);
-      })
-    );
-  }
+  // NO MORE TOGGLES. NO MORE MOCKS.
+  // We hit the API. If it fails, the console will stay RED until we fix the connection.
+  return this.http.get<Project[]>(this.apiUrl).pipe(
+    tap(data => {
+      console.log('API RESPONSE RECEIVED:', data);
+      this.projects.set(data);
+      this.loading.set(false);
+    }),
+    catchError(err => {
+      console.error('API IS BROKEN. FIX THE CONNECTION:', err);
+      this.loading.set(false);
+      // We return an empty array instead of mocks so the UI stays empty 
+      // until the API is actually fixed.
+      return of([]); 
+    })
+  );
+}
 
   getProjectById(id: number): Project | undefined {
     return this.projects().find(p => p.id === id);

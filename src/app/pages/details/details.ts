@@ -1,8 +1,9 @@
-import { Component, input, computed, AfterViewInit, effect } from '@angular/core';
+import { Component, input, computed, AfterViewInit, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Project } from '../../models/project.model';
-import { MOCK_PROJECTS } from '../../data/mock-projects';
+import { ProjectService } from '../../../services/api.service';
+//import { MOCK_PROJECTS } from '../../data/mock-projects';
 import { NgOptimizedImage } from '@angular/common';
 
 declare var M: any;
@@ -15,13 +16,14 @@ declare var M: any;
   styleUrl: './details.scss',
 })
 export class details implements AfterViewInit {
+  private projectService = inject(ProjectService);
   // Automatically bound from the URL /project/:id
   id = input.required<string>(); 
 
   // Reactively find the project
   project = computed(() => {
     const numericId = Number(this.id());
-    return MOCK_PROJECTS.find(p => p.id === numericId);
+    return this.projectService.projects().find(p => p.id === numericId);
   });
 
   constructor() {

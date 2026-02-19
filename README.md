@@ -28,4 +28,4 @@ This repo is organized as a monorepo:
     * `ng serve`
 
 ## 📧 Contact
-Feel free to reach out at [email] (jlovelace2500k@gmail) or find me on [LinkedIn](https://www.linkedin.com/in/jarrad-lovelace-b07085115/).
+Feel free to reach out at [email](jlovelace2500k@gmail) or find me on [LinkedIn](https://www.linkedin.com/in/jarrad-lovelace-b07085115/).

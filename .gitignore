@@ -28,10 +28,14 @@ yarn-error.log*
 **/App_Data/
 **/TestResults/
 # Ignore local user secrets/settings but keep the template
-**/appsettings.Development.json
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
 
-# --- Environment & Secrets ---
-# We ignore these everywhere just in case
+# User Secrets (Standard .NET path is outside the project, but just in case)
+secrets.json
+
+# Environment files
 .env
 .env.*
 !.env.example

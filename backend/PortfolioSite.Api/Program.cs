@@ -1,8 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using PortfolioSite.Api.Data;
 using PortfolioSite.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. SERVICES
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<PortfolioDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAngular", policy =>
         policy.WithOrigins("http://localhost:4200")

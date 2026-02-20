@@ -15,6 +15,6 @@ namespace PortfolioSite.Api.Models
 
         // Here is the connection! 
         // We tell C# that the "Narrative" property uses the class we defined above.
-        public virtual ProjectNarrative Narrative { get; set; } = new();
+        public virtual ProjectNarrative Narrative { get; set; } = null!;
     }
 }

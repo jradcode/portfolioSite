@@ -32,29 +32,21 @@ namespace PortfolioSite.Api.Migrations
                 name: "ProjectNarratives",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<int>(type: "integer", nullable: false),
                     BackStory = table.Column<string>(type: "text", nullable: false),
                     DesignPhilosophy = table.Column<string>(type: "text", nullable: false),
-                    TechnicalChallenges = table.Column<string>(type: "text", nullable: false),
-                    ProjectId = table.Column<int>(type: "integer", nullable: false)
+                    TechnicalChallenges = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProjectNarratives", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectNarratives_Projects_ProjectId",
-                        column: x => x.ProjectId,
+                        name: "FK_ProjectNarratives_Projects_Id",
+                        column: x => x.Id,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProjectNarratives_ProjectId",
-                table: "ProjectNarratives",
-                column: "ProjectId",
-                unique: true);
         }
 
         /// <inheritdoc />

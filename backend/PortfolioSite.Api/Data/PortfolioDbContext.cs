@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioSite.Api.Models;
-using System.Reflection.Emit;
 
 namespace PortfolioSite.Api.Data
 {
@@ -11,7 +10,6 @@ namespace PortfolioSite.Api.Data
         {
         }
 
-        // These represent your tables in Neon
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectNarrative> ProjectNarratives { get; set; }
 
@@ -19,15 +17,22 @@ namespace PortfolioSite.Api.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuring the 1-to-1 relationship
+            // 1. Configuring the 1-to-1 relationship with Shared Primary Key
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.Narrative)
-                .WithOne() // Narrative belongs to one project
-                .HasForeignKey<ProjectNarrative>(n => n.ProjectId);
+                .WithOne(n => n.Project) // Points back to the virtual Project property
+                .HasForeignKey<ProjectNarrative>(n => n.Id); // Narrative.Id is the link
 
-            // PostgreSQL Pro-Tip: Ensure arrays are handled correctly
-            // EF Core 10 handles string[] natively, but this ensures 
-            // the column type is explicitly text[]
+            // 2. Neon/PostgreSQL specific configuration for string arrays
+            // This ensures the database creates 'text[]' columns instead of trying to make a sub-table
+            modelBuilder.Entity<Project>(entity =>
+            {
+                entity.Property(p => p.Images)
+                    .HasColumnType("text[]");
+
+                entity.Property(p => p.Technologies)
+                    .HasColumnType("text[]");
+            });
         }
     }
 }

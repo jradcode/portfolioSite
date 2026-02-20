@@ -57,10 +57,7 @@ namespace PortfolioSite.Api.Migrations
             modelBuilder.Entity("PortfolioSite.Api.Models.ProjectNarrative", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BackStory")
                         .IsRequired()
@@ -70,28 +67,24 @@ namespace PortfolioSite.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("TechnicalChallenges")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId")
-                        .IsUnique();
-
                     b.ToTable("ProjectNarratives");
                 });
 
             modelBuilder.Entity("PortfolioSite.Api.Models.ProjectNarrative", b =>
                 {
-                    b.HasOne("PortfolioSite.Api.Models.Project", null)
+                    b.HasOne("PortfolioSite.Api.Models.Project", "Project")
                         .WithOne("Narrative")
-                        .HasForeignKey("PortfolioSite.Api.Models.ProjectNarrative", "ProjectId")
+                        .HasForeignKey("PortfolioSite.Api.Models.ProjectNarrative", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("PortfolioSite.Api.Models.Project", b =>

@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. SERVICES
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -23,7 +22,19 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 
-// 3. DATA: Using Class Object Initializers
+// 3. ENDPOINTS
+// This pulls live data from Neon now!
+app.MapGet("/api/projects", async (PortfolioDbContext db) =>
+    await db.Projects
+            .Include(p => p.Narrative)
+            .ToListAsync());
+
+app.Run();
+
+/* ---------------------------------------------------------
+   REFERENCE MOCK DATA (Saved for future use/admin panels)
+   --------------------------------------------------------- */
+/*
 var myProjects = new List<Project> {
     new Project
     {
@@ -36,7 +47,6 @@ var myProjects = new List<Project> {
             "assets/images/personApp/personAppEditForm.png",
             "assets/images/personApp/personAppAboutPage.png"
         ],
-
         GithubUrl = "https://github.com/jradcode/person-app",
         Technologies = ["Angular 19", "Tailwind", "HTML", "Express.js", "Typescript", "JavaScript", "Prisma", "Postgres", "Neon"],
         Narrative = new ProjectNarrative
@@ -70,26 +80,21 @@ var myProjects = new List<Project> {
         Id = 3,
         Name = "mechanicTracker",
         Description =  "A CRUD app to track mechanical repairs for used cars and their issues and parts they need.",
-        Images = ["assets/images/mechanicTracker/mechanicTrackerHomePage.png",
+        Images = [
+            "assets/images/mechanicTracker/mechanicTrackerHomePage.png",
             "assets/images/mechanicTracker/mechanicTrackerAboutPage.png",
             "assets/images/mechanicTracker/mechanicTrackerSystemForm.png",
             "assets/images/mechanicTracker/mechanicTrackerSystemForm2.png",
             "assets/images/mechanicTracker/mechanicTrackerSystemForm3.png"
         ],
         GithubUrl = "https://github.com/jradcode/mechanic_Tracker",
-        Technologies = ["Python", "Flask", "pipenv", "jinja2", "CSS", "HTML"], //change the project to the react one
+        Technologies = ["Python", "Flask", "pipenv", "jinja2", "CSS", "HTML"],
         Narrative = new ProjectNarrative
         {
            BackStory = "I started this app because I had an old car that was in an accident, and I wanted to restore it. I had to research and learn car repair and automotive and to help me learn the various vehicle systems I wanted to create mechanic tracker that tracks the parts and problems with the car. I split it into systems like engine, brakes, suspension, transmission etc.",
-           DesignPhilosophy = "I wanted a comprehensive app that covers as many systems and parts of the car as possible. I focus on 1 car first then maybe later expend it to different cars. However it would be a huge app so I wanted to generalize and appeal to older used cars as they need the most work. I do want to expand the UI to use angular or react as right now it is using the jinja2 template language. I might want to switch  the backend to use Golang instead of Python Flask. Later on I was thinking of turning it into a mobile app.",
+           DesignPhilosophy = "I wanted a comprehensive app that covers as many systems and parts of the car as possible. I focus on 1 car first then maybe later expend it to different cars. However it would be a huge app so I wanted to generalize and appeal to older used cars as they need the most work. I do want to expand the UI to use angular or react as right now it is using the jinja2 template language. I might want to switch the backend to use Golang instead of Python Flask. Later on I was thinking of turning it into a mobile app.",
            TechnicalChallenges = "The data would be huge as there's thousands of parts for a car. I needed to do much research and focus on 1 car to make it manageable. The main challenge is how big and complex the data structure will be and how much I'm willing to expand this app."
         }
     }
 };
-
-//Also decide if I should host the images here as well as the resume.
-//randomize ids for ef core and the database
-// 4. ENDPOINTS
-app.MapGet("/api/projects", () => myProjects);
-
-app.Run();
+*/

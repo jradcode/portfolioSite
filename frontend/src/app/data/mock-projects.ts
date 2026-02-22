@@ -55,7 +55,7 @@ export const MOCK_PROJECTS: Project[] = [
       "assets/images/mechanicTracker/mechanicTrackerSystemForm3.png"
     ],
     githubUrl: "https://github.com/jradcode/mechanic_Tracker",
-    technologies: ["Python", "Flask", "pipenv", "jinja2", "CSS", "HTML",], //change the project to the react one
+    technologies: ["Python", "Flask", "pipenv", "jinja2", "CSS", "HTML"], //change the project to the react one
 
     narrative: {
       backStory: "I started this app because I had an old car that was in an accident, and I wanted to restore it. I had to research and learn car repair and automotive and to help me learn the various vehicle systems I wanted to create mechanic tracker that tracks the parts and problems with the car. I split it into systems like engine, brakes, suspension, transmission etc.",

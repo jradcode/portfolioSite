@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PortfolioSite.Api.Data;
 using PortfolioSite.Api.Models;
+using PortfolioSite.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,21 +16,37 @@ builder.Services.AddCors(options => {
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
+builder.Services.AddProblemDetails(); // Standardizes error responses
 
 var app = builder.Build();
 
 // 2. MIDDLEWARE
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    // In production, catch all and return a clean JSON Problem Detail
+    app.UseExceptionHandler();
+}
+app.UseStatusCodePages(); // Handles 404s, etc., as JSON
 
-// 3. ENDPOINTS
-// This pulls live data from Neon now!
-app.MapGet("/api/projects", async (PortfolioDbContext db) =>
-    await db.Projects
-            .Include(p => p.Narrative)
-            .ToListAsync());
+//the Api
+app.MapPortfolioSiteEndpoints();
 
 app.Run();
+
+
+
+
+
+
+
+
+
 
 /* ---------------------------------------------------------
    REFERENCE MOCK DATA (Saved for future use/admin panels)

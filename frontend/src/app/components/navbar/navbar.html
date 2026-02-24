@@ -24,6 +24,15 @@
     </div>
 
     <div class="flex flex-1 justify-end items-center space-x-2 sm:space-x-4">
+      <a routerLink="/add-project"
+         routerLinkActive="ring-2 ring-emerald-500"
+         class="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-2 sm:px-4 text-xs font-bold text-emerald-700 transition-all hover:bg-emerald-600 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        <span class="hidden sm:inline">Add Project</span>
+      </a>
+      
       <a [href]="resumeUrl()"
          download="Jarrad-Resume.pdf"
          class="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-2 sm:px-4 text-xs font-bold text-blue-700 transition-all hover:bg-blue-600 hover:text-white">

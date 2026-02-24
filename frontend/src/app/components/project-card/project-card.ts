@@ -1,8 +1,9 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router'; // Ensure this is here!
 import { Project } from '../../models/project.model';
 import { NgOptimizedImage } from '@angular/common';
+import { ProjectService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-project-card',
@@ -13,6 +14,17 @@ import { NgOptimizedImage } from '@angular/common';
 export class projectCard {
   project = input.required<Project>();
   currentImgIndex = signal(0);
+  private projectService = inject(ProjectService);
+
+  // Added the delete logic
+  deleteProject(id: number) {
+    if (confirm('CAUTION: Permanent data purge requested. Proceed?')) {
+      this.projectService.deleteProject(id).subscribe({
+        next: () => console.log('Asset successfully purged from Neon.'),
+        error: (err) => alert('Purge sequence failed: ' + err.message)
+      });
+    }
+  }
 
   setImgIndex(index: number) {
     this.currentImgIndex.set(index);

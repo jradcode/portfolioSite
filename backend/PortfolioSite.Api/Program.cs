@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PortfolioSite.Api.Data;
-using PortfolioSite.Api.Models;
 using PortfolioSite.Api.Endpoints;
+using PortfolioSite.Api.Models;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,21 @@ builder.Services.AddCors(options => {
               .AllowAnyMethod());
 });
 builder.Services.AddProblemDetails(); // Standardizes error responses
+
+builder.Services.ConfigureHttpJsonOptions(options => {
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
+// In Program.cs, before var app = builder.Build();
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // Set to 100MB
+});
+
+// For Minimal APIs, also increase the MaxRequestBodySize
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;
+});
 
 var app = builder.Build();
 

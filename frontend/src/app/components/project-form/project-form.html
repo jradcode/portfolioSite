@@ -1,0 +1,97 @@
+<div class="relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl">
+  
+  <form (submit)="onSubmit()" class="relative z-10 p-8 lg:p-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10">
+      
+      <div class="space-y-8">
+        
+        <div class="group">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Project Name</label>
+          <input [ngModel]="project().name" (ngModelChange)="updateField('name', $event)" name="name" type="text" 
+                 class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none transition-all focus:border-blue-500/50 shadow-inner"
+                 placeholder="e.g. person-app">
+        </div>
+
+        <div class="group">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Stack (Comma Separated)</label>
+          <textarea [ngModel]="project().technologies.join(', ')" (ngModelChange)="updateTech($event)" name="tech"
+                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-blue-300 font-mono text-sm outline-none transition-all focus:border-blue-500/50 h-28"></textarea>
+        </div>
+
+        <div class="group">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">GitHub Repository</label>
+          <input [ngModel]="project().githubUrl" (ngModelChange)="updateField('githubUrl', $event)" name="github" type="url" 
+                 class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 font-mono text-sm outline-none focus:border-blue-500/50">
+        </div>
+      </div>
+
+      <div class="space-y-8">
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">02. Project Narrative</h3>
+        
+        <div class="group">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Backstory</label>
+          <textarea [ngModel]="project().narrative?.backStory" (ngModelChange)="updateNarrative('backStory', $event)" name="backStory" rows="4"
+                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 italic font-serif outline-none focus:border-blue-500/50"></textarea>
+        </div>
+
+        <div class="group">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Design Philosophy</label>
+          <textarea [ngModel]="project().narrative?.designPhilosophy" (ngModelChange)="updateNarrative('designPhilosophy', $event)" name="philosophy" rows="4"
+                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 outline-none focus:border-blue-500/50"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-8 mt-12">
+      <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">03. Media Uplink</h3>
+      
+      <div 
+        class="relative group/drop h-48 rounded-2xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center cursor-pointer
+               {{ isDragging() ? 'border-blue-500 bg-blue-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700' }}"
+        (dragover)="onDragOver($event)"
+        (dragleave)="isDragging.set(false)"
+        (drop)="onFileDropped($event)"
+        (click)="fileInput.click()">
+        
+        <input #fileInput type="file" (change)="onFileSelected($event)" multiple hidden>
+        <div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+
+        <div class="relative z-10 flex flex-col items-center text-center p-6">
+          <svg class="w-10 h-10 mb-4 transition-colors {{ isDragging() ? 'text-blue-400' : 'text-slate-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">
+            {{ isDragging() ? 'Drop to Sync' : 'Drag & Drop Project Screenshots' }}
+          </p>
+          <p class="text-[10px] text-slate-600 mt-2 font-mono uppercase">Or click to browse assets</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+        @for (img of project().images; track img; let i = $index) {
+          <div class="group/img relative aspect-square rounded-xl border border-slate-800 bg-slate-900 overflow-hidden shadow-2xl">
+            <img [src]="img" class="h-full w-full object-cover transition-transform duration-500 group-hover/img:scale-110" />
+            <button type="button" (click)="removeImage(i); $event.stopPropagation()"
+                    class="absolute inset-0 flex items-center justify-center bg-red-600/90 opacity-0 group-hover/img:opacity-100 transition-opacity">
+              <span class="text-[10px] font-black uppercase tracking-tighter text-white">Remove</span>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <button type="button" (click)="cancelled.emit()"
+              class="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">
+        Cancel Operation
+      </button>
+
+      <button type="submit" 
+              class="group/btn relative inline-flex items-center gap-3 px-12 py-4 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 hover:-translate-y-1 active:scale-95">
+        {{ initialData() ? 'Update Entry' : 'Create Entry' }}
+        <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+          <path d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,36 @@
+<div class="min-h-screen bg-black py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    
+    <header class="mb-12 border-l-4 border-blue-500 pl-6">
+      <div class="flex items-center gap-2 text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">
+        <span>System</span>
+        <span class="text-blue-500">/</span>
+        <span>Editor</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">
+        Modify <span class="text-blue-500">Asset</span>
+      </h1>
+      <p class="text-slate-500 font-mono text-xs mt-2 uppercase tracking-widest">
+        Target_ID: {{ projectToEdit()?.id ?? 'PENDING...' }}
+      </p>
+    </header>
+
+    @if (projectToEdit(); as project) {
+      <app-project-form 
+        [initialData]="project"
+        (submitted)="updateProject($event)" 
+        (cancelled)="goBack()" />
+    } @else {
+      <div class="border border-slate-800 bg-slate-900/20 rounded-3xl p-20 flex flex-col items-center justify-center gap-6">
+        <div class="relative h-12 w-12">
+          <div class="absolute inset-0 border-4 border-blue-500/20 rounded-full"></div>
+          <div class="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p class="text-slate-500 font-black text-[10px] uppercase tracking-[0.4em] animate-pulse">
+          Retrieving Data Records...
+        </p>
+      </div>
+    }
+
+  </div>
+</div>

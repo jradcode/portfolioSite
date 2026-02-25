@@ -13,6 +13,13 @@
         </div>
 
         <div class="group">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Short Description</label>
+          <input [ngModel]="project().description" (ngModelChange)="updateField('description', $event)" name="description" type="text" 
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none transition-all focus:border-blue-500/50 shadow-inner"
+                placeholder="A short project description..">
+        </div>
+
+        <div class="group">
           <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Stack (Comma Separated)</label>
           <textarea [ngModel]="project().technologies.join(', ')" (ngModelChange)="updateTech($event)" name="tech"
                     class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-blue-300 font-mono text-sm outline-none transition-all focus:border-blue-500/50 h-28"></textarea>

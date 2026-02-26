@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioSite.Api.Data;
 using PortfolioSite.Api.Models;
+using PortfolioSite.Api.Services;
 
 namespace PortfolioSite.Api.Endpoints
 {
@@ -95,15 +96,49 @@ namespace PortfolioSite.Api.Endpoints
             });
 
             // DELETE
-            group.MapDelete("/{id}", async (int id, PortfolioDbContext db) =>
+            group.MapDelete("/{id}", async (int id, PortfolioDbContext db, IWebHostEnvironment env) =>
             {
                 var project = await db.Projects.FindAsync(id);
                 if (project is null) return Results.NotFound();
+
+                // OPTIONAL: Delete the physical folder for this project
+                // This assumes your folder name matches a slugified version of project.Name
+                var slug = project.Name.ToLower().Replace(" ", "-");
+                var folderPath = Path.Combine(env.WebRootPath, "images", slug);
+
+                if (Directory.Exists(folderPath))
+                {
+                    Directory.Delete(folderPath, true); // true = recursive delete
+                }
 
                 db.Projects.Remove(project);
                 await db.SaveChangesAsync();
                 return Results.NoContent();
             });
+
+            // POST (UPLOAD IMAGE)
+            // This endpoint takes a file and the project name to create /images/project-name/file.webp
+            group.MapPost("/upload", async (IFormFile file, string projectName, IImageService imageService) =>
+            {
+                if (file == null || file.Length == 0)
+                    return Results.BadRequest("No file uploaded.");
+
+                if (string.IsNullOrWhiteSpace(projectName))
+                    return Results.BadRequest("Project name is required for folder organization.");
+
+                try
+                {
+                    // Call our SkiaSharp service
+                    string imagePath = await imageService.ProcessAndSaveImageAsync(file, projectName);
+
+                    // Return the path so Angular can add it to the Project.Images array
+                    return Results.Ok(new { path = imagePath });
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem($"Image processing failed: {ex.Message}");
+                }
+            }).DisableAntiforgery(); // Essential for multipart/form-data in Minimal APIs
         }
     }
 }

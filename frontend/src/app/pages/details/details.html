@@ -39,72 +39,85 @@
                 <span class="h-6 w-1 bg-blue-600 rounded-full"></span>
                 Background Story
               </h2>
-              <p class="text-slate-400 text-lg leading-relaxed">
+              <p class="text-slate-400 text-lg leading-relaxed break-words">
                 {{ p.narrative?.backStory }}
               </p>
             </div>
+
             <div class="lg:col-span-3 relative h-[300px] md:h-[500px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 group">
-              <img [ngSrc]="p.images[0]" 
+              @if (p.images[0].startsWith('data:image')) {
+                <img [src]="p.images[0]" 
+                    class="materialboxed object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" 
+                    [alt]="p.name">
+              } @else {
+                <img [ngSrc]="p.images[0]" 
+                    fill 
+                    priority 
+                    [style.view-transition-name]="'hero-' + p.id"
+                    class="materialboxed object-cover transition-transform duration-700 group-hover:scale-105" 
+                    [alt]="p.name">
+              }
+            </div>
+          </div> 
+        }
+        
+
+       @if (p.narrative?.designPhilosophy) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12 items-center">
+          <div class="lg:col-span-3 order-2 lg:order-1 relative h-[300px] md:h-[500px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 group">
+            
+            @let designImg = p.images[1] || p.images[0];
+
+            @if (designImg?.startsWith('data:image')) {
+              <img [src]="designImg" 
+                  class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" 
+                  [alt]="p.name">
+            } @else {
+              <img [ngSrc]="designImg" 
                   fill 
                   priority 
-                  [style.view-transition-name]="'hero-' + p.id"
-                  class="materialboxed object-cover transition-transform duration-700 group-hover:scale-105" 
+                  class="object-cover transition-transform duration-700 group-hover:scale-105" 
                   [alt]="p.name">
-              </div>
+            }
           </div>
-        }
 
-        @if (p.narrative?.designPhilosophy) {
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12 items-center">
-            <div class="lg:col-span-3 order-2 lg:order-1 relative h-[300px] md:h-[500px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 group">
-              <img [ngSrc]="p.images[1] || p.images[0]" 
-                  fill 
-                  priority 
-                  class="materialboxed object-cover transition-transform duration-700 group-hover:scale-105" 
-                  [alt]="p.name">
-            </div>
-            <div class="lg:col-span-2 order-1 lg:order-2">
-              <h2 class="text-2xl font-bold text-white mb-4 uppercase tracking-tighter flex items-center gap-3">
-                <span class="h-6 w-1 bg-indigo-600 rounded-full"></span>
-                Design Philosophy
-              </h2>
-              <p class="text-slate-400 text-lg leading-relaxed">
-                {{ p.narrative?.designPhilosophy }}
-              </p>
-            </div>
-          </div>
-        }
-
-        @if (p.narrative?.technicalChallenges) {
-          <div class="p-8 md:p-12 rounded-3xl bg-slate-900/50 border border-slate-800 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10">
-               <svg class="w-24 h-24 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-6 uppercase tracking-tighter">Technical Hurdles</h2>
-            <p class="text-slate-300 text-lg leading-relaxed max-w-3xl">
-              {{ p.narrative?.technicalChallenges }}
+          <div class="lg:col-span-2 order-1 lg:order-2">
+            <h2 class="text-2xl font-bold text-white mb-4 uppercase tracking-tighter flex items-center gap-3">
+              <span class="h-6 w-1 bg-indigo-600 rounded-full"></span>
+              Design Philosophy
+            </h2>
+            <p class="text-slate-400 text-lg leading-relaxed break-words">
+              {{ p.narrative?.designPhilosophy }}
             </p>
           </div>
-        }
+        </div>
+      }
 
-        <div class="space-y-12">
-          <div class="flex items-center gap-4">
-            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-[0.4em] whitespace-nowrap">Visual Deep-Dive</h2>
-            <div class="h-[1px] w-full bg-slate-800"></div>
-          </div>
+      <div class="space-y-12">
+        <div class="flex items-center gap-4">
+          <h2 class="text-xs font-bold text-slate-500 uppercase tracking-[0.4em] whitespace-nowrap">Visual Deep-Dive</h2>
+          <div class="h-[1px] w-full bg-slate-800"></div>
+        </div>
 
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           @for (img of p.images.slice(2); track img) {
             <div class="group relative aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-xl transition-all duration-500 hover:border-blue-500/50">
-              <img [ngSrc]="img" 
-                  fill
-                  class="materialboxed object-cover transition-transform duration-700 group-hover:scale-110" 
-                  [alt]="p.name">
+              
+              @if (img?.startsWith('data:image')) {
+                <img [src]="img" 
+                    class="materialboxed object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" 
+                    [alt]="p.name">
+              } @else {
+                <img [ngSrc]="img" 
+                    fill
+                    class="materialboxed object-cover transition-transform duration-700 group-hover:scale-110" 
+                    [alt]="p.name">
+              }
               <div class="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500"></div>
             </div>
           }
-          </div>
         </div>
+      </div>
 
         <div class="py-20 text-center border-t border-slate-900">
            <p class="text-slate-500 mb-6 font-mono text-sm">Interested in seeing more?</p>

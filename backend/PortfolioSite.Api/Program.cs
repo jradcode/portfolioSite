@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PortfolioSite.Api.Data;
 using PortfolioSite.Api.Endpoints;
 using PortfolioSite.Api.Models;
+using PortfolioSite.Api.Services;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,15 +29,24 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
     options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // Set to 100MB
 });
 
+
 // For Minimal APIs, also increase the MaxRequestBodySize
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;
 });
 
+// Register SkiaSharp service
+builder.Services.AddScoped<IImageService, ImageService>();
+
 var app = builder.Build();
 
 // 2. MIDDLEWARE
+
+// --- IMAGE SERVING ---
+// This enables serving files from the wwwroot/images folder
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 if (app.Environment.IsDevelopment())

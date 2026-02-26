@@ -1,6 +1,6 @@
 
 export const environment = {
   production: false,
-  apiUrl: '/api', // Your local .NET Kestrel URL
-  useMockData: false // Toggle this to false when your API is live
+  apiUrl: 'https://localhost:7143/api', // .NET port
+  useMockData: false // Toggle this to false when API is live
 };

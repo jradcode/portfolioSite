@@ -21,12 +21,12 @@ export class AddProject {
   createProject(newProject: Project) {
     this.projectService.createProject(newProject).subscribe({
       next: (response) => {
-        console.log('Project successfully injected into system:', response);
+        console.log('Project Successfully Added', response);
         // Navigate back to the gallery
         this.router.navigate(['/projects']); 
       },
       error: (err) => {
-        console.error('System transmission failed:', err);
+        console.error('Failed to create project!', err);
       }
     });
   }

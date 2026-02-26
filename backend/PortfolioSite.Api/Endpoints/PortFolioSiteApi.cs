@@ -26,9 +26,29 @@ namespace PortfolioSite.Api.Endpoints
             // POST (CREATE)
             group.MapPost("/", async (Project project, PortfolioDbContext db) =>
             {
+                // 1. Ensure the incoming IDs are 0. 
+                // If Angular sends 'null' or a number, it can trip the PK constraint.
+                project.Id = 0;
+
+                if (project.Narrative != null)
+                {
+                    // For Shared PK, the Narrative ID must be 0 
+                    // so it can inherit the Project ID after the Project is saved.
+                    project.Narrative.Id = 0;
+                    project.Narrative.Project = project; // Explicitly link them
+                }
+
                 db.Projects.Add(project);
-                await db.SaveChangesAsync();
-                return Results.Created($"/api/projects/{project.Id}", project);
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                    return Results.Created($"/api/projects/{project.Id}", project);
+                }
+                catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    return Results.Conflict("A project with this ID already exists or the sequence is out of sync.");
+                }
             });
 
             //PUT (UPDATE) Edit Project

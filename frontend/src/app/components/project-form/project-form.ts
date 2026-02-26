@@ -1,6 +1,6 @@
 import { Component, input, output, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Project } from '../../models/project.model';
+import { Project, ProjectNarrative } from '../../models/project.model'; //model is split into two interfaces
 
 @Component({
   selector: 'app-project-form',
@@ -81,29 +81,56 @@ export class ProjectForm {
     this.project.update(p => ({ ...p, [field]: value }));
   }
 
-  updateNarrative(field: keyof NonNullable<Project['narrative']>, value: string) {
-    this.project.update(p => ({
-      ...p,
-      narrative: {
-        ...(p.narrative || { backStory: '', designPhilosophy: '', technicalChallenges: '' }),
-        [field]: value
-      }
-    }));
-  }
+  updateNarrative(field: keyof ProjectNarrative, value: string) {
+  this.project.update(p => ({
+    ...p,
+    narrative: {
+      // Default values if narrative was null
+      ...(p.narrative || { id: 0, backStory: '', designPhilosophy: '', technicalChallenges: '' }),
+      [field]: value
+    }
+  }));
+}
 
   updateTech(value: string) {
     const techArray = value.split(',').map(t => t.trim()).filter(t => t !== '');
     this.updateField('technologies', techArray);
   }
 
-  onSubmit() {
-    this.submitted.emit(this.project());
-  }
+onSubmit() {
+  const currentProject = this.project();
+  const isEdit = !!this.initialData();
 
-  private getEmptyProject(): Project {
-    return {
-      id: 0, name: '', description: '', images: [], githubUrl: '', technologies: [],
-      narrative: { backStory: '', designPhilosophy: '', technicalChallenges: '' }
-    };
-  }
+  // Explicitly typing the payload as Project
+  const payload: Project = {
+    ...currentProject,
+    id: isEdit ? currentProject.id : 0,
+    narrative: currentProject.narrative 
+      ? {
+          ...currentProject.narrative,
+          // Shared PK logic: Narrative ID must match Project ID
+          id: isEdit ? currentProject.id : 0 
+        } 
+      : null
+  };
+
+  this.submitted.emit(payload);
+}
+
+ private getEmptyProject(): Project {
+  return {
+    id: 0, 
+    name: '', 
+    description: '', 
+    images: [], 
+    githubUrl: '', 
+    technologies: [],
+    narrative: { 
+      id: 0, // Add this
+      backStory: '', 
+      designPhilosophy: '', 
+      technicalChallenges: '' 
+    }
+  };
+}
 }

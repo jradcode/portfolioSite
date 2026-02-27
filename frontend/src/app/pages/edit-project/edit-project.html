@@ -14,7 +14,7 @@
       </p>
     </header>
 
-    @if (projectToEdit(); as project) {
+   @if (projectWithFullUrls(); as project) {
       <app-project-form 
         [initialData]="project"
         (submitted)="updateProject($event)" 
@@ -26,7 +26,7 @@
           <div class="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
         <p class="text-slate-500 font-black text-[10px] uppercase tracking-[0.4em] animate-pulse">
-          Retrieving Data Records...
+          Retrieving the projects...
         </p>
       </div>
     }

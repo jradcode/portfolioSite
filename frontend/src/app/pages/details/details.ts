@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Project } from '../../models/project.model';
 import { ProjectService } from '../../../services/api.service';
-//import { MOCK_PROJECTS } from '../../data/mock-projects';
 import { NgOptimizedImage } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
+// Materialize Global Variable
 declare var M: any;
 
 @Component({
@@ -17,29 +18,67 @@ declare var M: any;
 })
 export class details implements AfterViewInit {
   private projectService = inject(ProjectService);
-  // Automatically bound from the URL /project/:id
+  
+  // Bound automatically from the URL /project/:id via provideRouter(routes, withComponentInputBinding())
   id = input.required<string>(); 
 
-  // Reactively find the project
+  // 1. Find the project in the shared service signal
   project = computed(() => {
     const numericId = Number(this.id());
     return this.projectService.projects().find(p => p.id === numericId);
   });
 
+  // 2. Process images: Handle JSON strings, Base64, and Server URLs
+  fullImageUrls = computed(() => {
+    const proj = this.project();
+    
+    // Safety check: No project or no images
+    if (!proj || !proj.images) {
+      return ['assets/placeholder.png'];
+    }
+
+    let imageArray: string[] = [];
+
+    // Step A: Parse if stringified JSON, otherwise use as is
+    try {
+      imageArray = typeof proj.images === 'string' 
+        ? JSON.parse(proj.images) 
+        : proj.images;
+    } catch (e) {
+      // If parsing fails, it might be a single raw string
+      imageArray = [proj.images as unknown as string];
+    }
+
+    if (imageArray.length === 0) return ['assets/placeholder.png'];
+
+    // Step B: Transform paths into full valid URLs
+    return imageArray.map(path => {
+      // Return immediately if it's Base64 or an external absolute URL
+      if (path.startsWith('data:image') || path.startsWith('http')) {
+        return path;
+      }
+      
+      // Fix potential missing slash and append server URL
+      const cleanPath = path.startsWith('/') ? path : `/${path}`;
+      return `${environment.serverUrl}${cleanPath}`;
+    });
+  });
+
   constructor() {
-    // This will run every time the project changes!
+    // Re-initialize Materialize zoom effects whenever the project data changes
     effect(() => {
       if (this.project()) {
-        // Wait for the DOM to update with the new project images
+        // requestAnimationFrame ensures the DOM has rendered the new @for loop
         requestAnimationFrame(() => this.initMaterialbox());
       }
     });
   }
 
   ngAfterViewInit() {
-      this.initMaterialbox();
+    this.initMaterialbox();
   }
 
+  // Materialize CSS "Materialbox" (Lightbox) initialization
   private initMaterialbox() {
     const elems = document.querySelectorAll('.materialboxed');
     if (typeof M !== 'undefined' && elems.length > 0) {

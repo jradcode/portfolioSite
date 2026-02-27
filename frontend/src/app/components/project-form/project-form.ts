@@ -17,12 +17,19 @@ export class ProjectForm {
   
   // Track drag state for UI styling
   isDragging = signal(false);
+  techString = signal<string>('');
 
   constructor() {
     effect(() => {
       const data = this.initialData();
-      this.project.set(data ? JSON.parse(JSON.stringify(data)) : this.getEmptyProject());
-    });
+      if (data) {
+        this.project.set(JSON.parse(JSON.stringify(data)));
+        this.techString.set(data.technologies.join(', '));
+      } else {
+        this.project.set(this.getEmptyProject());
+        this.techString.set('');
+      }
+      }, { allowSignalWrites: true }); 
   }
 
   // --- Image Handling Logic ---
@@ -92,10 +99,14 @@ export class ProjectForm {
   }));
 }
 
-  updateTech(value: string) {
-    const techArray = value.split(',').map(t => t.trim()).filter(t => t !== '');
-    this.updateField('technologies', techArray);
-  }
+ updateTech(value: string) {
+  this.techString.set(value); // Keep the string as the user types it
+  const techArray = value.split(',')
+    .map(t => t.trim())
+    .filter(t => t !== '');
+  
+  this.project.update(p => ({ ...p, technologies: techArray }));
+}
 
 onSubmit() {
   const currentProject = this.project();

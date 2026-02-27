@@ -20,9 +20,16 @@
         </div>
 
         <div class="group">
-          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Stack (Comma Separated)</label>
-          <textarea [ngModel]="project().technologies.join(', ')" (ngModelChange)="updateTech($event)" name="tech"
-                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-blue-300 font-mono text-sm outline-none transition-all focus:border-blue-500/50 h-28"></textarea>
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">
+            Tech Stack (Comma Separated)
+          </label>
+          <textarea 
+            [ngModel]="techString()" 
+            (ngModelChange)="updateTech($event)" 
+            name="tech"
+            class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-blue-300 font-mono text-sm outline-none focus:border-blue-500/50 h-28"
+            placeholder="Angular, .NET, Neon, Tailwind...">
+          </textarea>
         </div>
 
         <div class="group">
@@ -33,23 +40,28 @@
       </div>
 
       <div class="space-y-8">
-        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">02. Project Narrative</h3>
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">Project Narrative</h3>
         
         <div class="group">
-          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Backstory</label>
-          <textarea [ngModel]="project().narrative?.backStory" (ngModelChange)="updateNarrative('backStory', $event)" name="backStory" rows="4"
-                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 italic font-serif outline-none focus:border-blue-500/50"></textarea>
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Technical Challenges</label>
+          <textarea [ngModel]="project().narrative?.technicalChallenges" 
+              (ngModelChange)="updateNarrative('technicalChallenges', $event)" 
+              name="challenges" rows="4"
+              class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 outline-none focus:border-blue-500/50"
+              placeholder="What were the hardest parts to build?"></textarea>
         </div>
 
         <div class="group">
           <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">Design Philosophy</label>
           <textarea [ngModel]="project().narrative?.designPhilosophy" (ngModelChange)="updateNarrative('designPhilosophy', $event)" name="philosophy" rows="4"
-                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 outline-none focus:border-blue-500/50"></textarea>
+                    class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 outline-none focus:border-blue-500/50"
+                    placeholder="How were you thinking of designing it?">
+          </textarea>
         </div>
       </div>
     </div>
     <div class="space-y-8 mt-12">
-      <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">03. Media Uplink</h3>
+      <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">Media Uplink</h3>
       
       <div 
         class="relative group/drop h-48 rounded-2xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center cursor-pointer
@@ -74,7 +86,7 @@
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-        @for (img of project().images; track img; let i = $index) {
+       @for (img of project().images; track $index; let i = $index) {
           <div class="group/img relative aspect-square rounded-xl border border-slate-800 bg-slate-900 overflow-hidden shadow-2xl">
             <img [src]="img" class="h-full w-full object-cover transition-transform duration-500 group-hover/img:scale-110" />
             <button type="button" (click)="removeImage(i); $event.stopPropagation()"

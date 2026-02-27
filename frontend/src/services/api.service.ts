@@ -66,10 +66,10 @@ export class ProjectService {
       tap(() => {
         // Update the signal to remove the project locally
         this.projects.update(current => current.filter(p => p.id !== id));
-        console.log(`Project ${id} successfully purged from system.`);
+        console.log(`Project ${id} successfully deleted`);
       }),
       catchError(err => {
-        console.error('Deletion failed. Check API connection:', err);
+        console.error('Delete failed. Check API connection:', err);
         throw err;
       })
     );

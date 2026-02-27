@@ -1,14 +1,15 @@
-import { Component, input, signal, inject } from '@angular/core';
+import { Component, input, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router'; // Ensure this is here!
+import { RouterLink } from '@angular/router';
 import { Project } from '../../models/project.model';
 import { NgOptimizedImage } from '@angular/common';
 import { ProjectService } from '../../../services/api.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-project-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, NgOptimizedImage], // And here!
+  imports: [CommonModule, RouterLink, NgOptimizedImage],
   templateUrl: './project-card.html',
 })
 export class projectCard {
@@ -16,42 +17,75 @@ export class projectCard {
   currentImgIndex = signal(0);
   private projectService = inject(ProjectService);
 
-  // Added the delete logic
+  // 1. Centralized logic to handle the JSON string vs Array issue
+  imageList = computed(() => {
+    const raw = this.project().images;
+    if (!raw) return [];
+    try {
+      // If it's a string that looks like ["img.jpg"], parse it. 
+      // Otherwise, wrap the single string in an array.
+      return typeof raw === 'string' ? JSON.parse(raw) : raw;
+    } catch {
+      return [raw];
+    }
+  });
+
+  // 2. Uses the imageList to figure out exactly what to show
+  displayImageUrl = computed(() => {
+    const images = this.imageList();
+    if (images.length === 0) return 'assets/placeholder.png';
+
+    const path = images[this.currentImgIndex()];
+
+    // Base64 or External URL check
+    if (path.startsWith('data:image') || path.startsWith('http')) {
+      return path;
+    }
+
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${environment.serverUrl}${cleanPath}`;
+  });
+
   deleteProject(id: number) {
-    if (confirm('CAUTION: Permanent data purge requested. Proceed?')) {
+    if (confirm('CAUTION: Will delete project permanently. Proceed?')) {
       this.projectService.deleteProject(id).subscribe({
-        next: () => console.log('Asset successfully purged from Neon.'),
+        next: () => console.log('UI updated via service signal.'),
         error: (err) => alert('Purge sequence failed: ' + err.message)
       });
     }
   }
 
-  setImgIndex(index: number) {
-    this.currentImgIndex.set(index);
-  }
-  preloadNext() {
-    const images = this.project().images;
-    if (!images || images.length <= 1) return;
-    
-    // Preload the image at the next index
-    const nextIdx = (this.currentImgIndex() + 1) % images.length;
-    const img = new Image();
-    img.src = images[nextIdx];
-  }
-
   nextImage(event: MouseEvent) {
-    const total = this.project().images?.length ?? 0;
-    if (total > 0) {
+    event.preventDefault();
+    event.stopPropagation(); // Prevents the card's RouterLink from triggering
+    const total = this.imageList().length;
+    if (total > 1) {
       this.currentImgIndex.update(idx => (idx + 1) % total);
-      // Trigger preload so the NEXT next image is ready
-      this.preloadNext(); 
+      this.preloadNext();
     }
   }
 
   prevImage(event: MouseEvent) {
-    const total = this.project().images?.length ?? 0;
-    if (total > 0) {
+    event.preventDefault();
+    event.stopPropagation();
+    const total = this.imageList().length;
+    if (total > 1) {
       this.currentImgIndex.update(idx => (idx - 1 + total) % total);
     }
+  }
+
+  preloadNext() {
+    const images = this.imageList();
+    if (images.length <= 1) return;
+
+    const nextIdx = (this.currentImgIndex() + 1) % images.length;
+    const path = images[nextIdx];
+    
+    // Don't need to preload Base64 strings
+    if (path.startsWith('data:image')) return;
+
+    const img = new Image();
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    img.src = path.startsWith('http') ? path : `${environment.serverUrl}${cleanPath}`;
   }
 }

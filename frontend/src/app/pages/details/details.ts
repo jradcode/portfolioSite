@@ -7,6 +7,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { environment } from '../../../environments/environment';
 
 // Materialize Global Variable
+//details page
 declare var M: any;
 
 @Component({

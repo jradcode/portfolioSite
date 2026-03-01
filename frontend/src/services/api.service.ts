@@ -75,3 +75,5 @@ export class ProjectService {
     );
   }
 }
+
+//return this.http.post('https://localhost:7143/api/auth/login', credentials); auth for future?

@@ -4,8 +4,30 @@ using PortfolioSite.Api.Endpoints;
 using PortfolioSite.Api.Models;
 using PortfolioSite.Api.Services;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 1. Setup Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // 1. SERVICES
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -39,6 +61,8 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // Register SkiaSharp service
 builder.Services.AddScoped<IImageService, ImageService>();
 
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 var app = builder.Build();
 
 // 2. MIDDLEWARE
@@ -46,7 +70,6 @@ var app = builder.Build();
 // --- IMAGE SERVING ---
 // This enables serving files from the wwwroot/images folder
 app.UseStaticFiles();
-
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 if (app.Environment.IsDevelopment())
@@ -59,7 +82,8 @@ else
     app.UseExceptionHandler();
 }
 app.UseStatusCodePages(); // Handles 404s, etc., as JSON
-
+app.UseAuthentication();
+app.UseAuthorization();
 //the Api
 app.MapPortfolioSiteEndpoints();
 

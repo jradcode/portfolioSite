@@ -2,13 +2,36 @@
 using PortfolioSite.Api.Data;
 using PortfolioSite.Api.Models;
 using PortfolioSite.Api.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace PortfolioSite.Api.Endpoints
 {
     public static class PortFolioSiteApi
     {
+        public record LoginRequest(string Username, string Password);
+
         public static void MapPortfolioSiteEndpoints(this IEndpointRouteBuilder app)
         {
+            // The actual login route
+            app.MapPost("/api/auth/login", (LoginRequest login, ITokenService tokenService, IConfiguration config) =>
+            {
+                var hasher = new PasswordHasher<string>();
+                    var adminUser = config["Admin:Username"];
+                    var adminHash = config["Admin:PasswordHash"];
+
+                // Verify credentials against appsettings.json
+                if (login.Username != adminUser || 
+                    hasher.VerifyHashedPassword(adminUser!, adminHash!, login.Password) 
+                    == PasswordVerificationResult.Failed)
+                {
+                    return Results.Unauthorized();
+                }
+
+                // Generate the JWT
+                var token = tokenService.CreateToken(adminUser!);
+                return Results.Ok(new { token });
+            });
+
             var group = app.MapGroup("/api/projects");
 
             group.MapGet("/", async (PortfolioDbContext db) =>
@@ -50,7 +73,7 @@ namespace PortfolioSite.Api.Endpoints
                 {
                     return Results.Conflict("A project with this ID already exists or the sequence is out of sync.");
                 }
-            });
+            }).RequireAuthorization();
 
             //PUT (UPDATE) Edit Project
             group.MapPut("/{id}", async (int id, Project inputProject, PortfolioDbContext db) =>
@@ -93,7 +116,7 @@ namespace PortfolioSite.Api.Endpoints
 
                 await db.SaveChangesAsync();
                 return Results.Ok(project);
-            });
+            }).RequireAuthorization();
 
             // DELETE
             group.MapDelete("/{id}", async (int id, PortfolioDbContext db, IWebHostEnvironment env) =>
@@ -114,7 +137,7 @@ namespace PortfolioSite.Api.Endpoints
                 db.Projects.Remove(project);
                 await db.SaveChangesAsync();
                 return Results.NoContent();
-            });
+            }).RequireAuthorization();
 
             // POST (UPLOAD IMAGE)
             // This endpoint takes a file and the project name to create /images/project-name/file.webp
@@ -138,7 +161,7 @@ namespace PortfolioSite.Api.Endpoints
                 {
                     return Results.Problem($"Image processing failed: {ex.Message}");
                 }
-            }).DisableAntiforgery(); // Essential for multipart/form-data in Minimal APIs
+            }).DisableAntiforgery().RequireAuthorization(); // Essential for multipart/form-data in Minimal APIs
         }
     }
 }

@@ -17,6 +17,12 @@ export class projectCard {
   currentImgIndex = signal(0);
   private projectService = inject(ProjectService);
 
+  // Add this inside your projectCard class
+  setImgIndex(index: number) {
+    // Update the signal with the specific index passed from the HTML
+    this.currentImgIndex.set(index);
+  }
+
   // 1. Centralized logic to handle the JSON string vs Array issue
   imageList = computed(() => {
     const raw = this.project().images;

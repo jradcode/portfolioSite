@@ -38,8 +38,19 @@
                 class="text-xs font-medium text-slate-500 hover:text-red-600 transition-colors">
           Logout
         </button>
-      }
 
+      } @else {
+        <a routerLink="/login" 
+          routerLinkActive="bg-white shadow-sm ring-1 ring-slate-200 text-blue-600" 
+          class="group flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50/50 px-4 py-1.5 text-xs font-bold text-slate-600 transition-all duration-300 hover:border-blue-400 hover:bg-white hover:text-blue-600 hover:shadow-md active:scale-95">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" 
+            class="h-3.5 w-3.5 transition-transform group-hover:rotate-12">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          <span>Admin</span>
+        </a>
+      }
       <a [href]="resumeUrl()"
          download="Jarrad-Resume.pdf"
          class="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-2 sm:px-4 text-xs font-bold text-blue-700 transition-all hover:bg-blue-600 hover:text-white">

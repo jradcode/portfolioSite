@@ -29,10 +29,10 @@ export class AppComponent implements OnInit {
     // We subscribe here so the data loads as soon as the user hits the site
     this.projectService.loadProjects().subscribe({
       next: (data) => {
-        console.log('✅ AppComponent: Data stream initialized successfully.');
+        console.log('AppComponent: Data stream initialized successfully.');
       },
       error: (err) => {
-        console.error('❌ AppComponent: Initial data load failed!', err);
+        console.error('AppComponent: Initial data load failed!', err);
       }
     });
   }

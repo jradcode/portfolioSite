@@ -60,6 +60,21 @@ export class ProjectService {
   getProjectById(id: number): Project | undefined {
     return this.projects().find(p => p.id === id);
   }
+
+  // 1. The Instant Signal Look-up (Keep this)
+
+// 2. The Deep-Link API Fetch (Add this)
+fetchProjectById(id: number): Observable<Project> {
+  return this.http.get<Project>(`${this.apiUrl}/${id}`).pipe(
+    tap(project => {
+      // Bonus: If the project isn't in our signal list yet, add/update it!
+      this.projects.update(current => {
+        const exists = current.find(p => p.id === project.id);
+        return exists ? current.map(p => p.id === project.id ? project : p) : [...current, project];
+      });
+    })
+  );
+}
   // DELETE: Remove a project from the system
   deleteProject(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(

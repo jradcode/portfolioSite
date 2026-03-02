@@ -87,6 +87,23 @@ app.UseAuthorization();
 //the Api
 app.MapPortfolioSiteEndpoints();
 
+
+//for testing login only 
+
+//copy and paste passwordhash and that username
+//{
+    //"Admin": {
+        //"Username": "jradcode",
+    //PasswordHash": "AQAAAAIAAYagAAAAE..."
+    //},
+var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<string>();
+// Replace 'YourSecurePassword' with what you want to type into your Angular form
+string hash = hasher.HashPassword("jradcode", "YourSecurePassword");
+Console.WriteLine("--------------------------------------------------");
+Console.WriteLine("COPY THIS HASH:");
+Console.WriteLine(hash);
+Console.WriteLine("--------------------------------------------------");
+
 app.Run();
 
 

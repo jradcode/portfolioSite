@@ -27,7 +27,7 @@ export class Login {
       
       this.authService.login({ username: username!, password: password! }).subscribe({
         next: () => {
-          this.router.navigate(['/projects']); // Go to projects on success
+          this.router.navigate(['/home']);; // Go to projects on success
         },
         error: (err) => {
           this.errorMessage = 'Invalid username or password';

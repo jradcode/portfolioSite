@@ -18,11 +18,11 @@ export class AuthService {
   #token = signal<string | null>(localStorage.getItem(this.TOKEN_KEY));
   isLoggedIn = computed(() => !!this.#token());
 
-  login(credentials: { username: string; password: string }) {
-    // 2. Add <LoginResponse> here to clear the redline
+ // Update the 'credentials' type to use PascalCase
+  // Update the 'credentials' type to use PascalCase
+login(credentials: { Username: string; Password: string }) { 
     return this.http.post<LoginResponse>(this.API_URL, credentials).pipe(
       tap((response) => {
-        // Now 'response.token' is recognized!
         localStorage.setItem(this.TOKEN_KEY, response.token);
         this.#token.set(response.token);
       })

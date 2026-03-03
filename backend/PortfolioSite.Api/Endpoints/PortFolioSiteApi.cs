@@ -15,19 +15,31 @@ namespace PortfolioSite.Api.Endpoints
             // The actual login route
             app.MapPost("/api/auth/login", (LoginRequest login, ITokenService tokenService, IConfiguration config) =>
             {
-                var hasher = new PasswordHasher<string>();
-                    var adminUser = config["Admin:Username"];
-                    var adminHash = config["Admin:PasswordHash"];
+                var adminUser = config["Admin:Username"];
+                var adminHash = config["Admin:PasswordHash"];
 
-                // Verify credentials against appsettings.json
-                if (login.Username != adminUser || 
-                    hasher.VerifyHashedPassword(adminUser!, adminHash!, login.Password) 
-                    == PasswordVerificationResult.Failed)
+                // 1. Log what is happening to your Terminal
+                Console.WriteLine($"Login Attempt: User={login.Username}, ConfigUser={adminUser}");
+
+                // 2. Check if the Username is correct
+                if (string.IsNullOrEmpty(login.Username) || login.Username != adminUser)
                 {
                     return Results.Unauthorized();
                 }
 
-                // Generate the JWT
+                var hasher = new PasswordHasher<string>();
+
+                // 3. THE UPDATED LINE: Verify the password using the SAME identity string used to hash it
+                var result = hasher.VerifyHashedPassword("jradcode", adminHash!, login.Password);
+
+                // 4. If the password (or the identity string "jradcode") doesn't match, fail.
+                if (result == PasswordVerificationResult.Failed)
+                {
+                    Console.WriteLine("DEBUG: Password verification failed.");
+                    return Results.Unauthorized();
+                }
+
+                // 5. Success!
                 var token = tokenService.CreateToken(adminUser!);
                 return Results.Ok(new { token });
             });

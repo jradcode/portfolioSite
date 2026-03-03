@@ -98,7 +98,7 @@ app.MapPortfolioSiteEndpoints();
     //},
 var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<string>();
 // Replace 'YourSecurePassword' with what you want to type into your Angular form
-string hash = hasher.HashPassword("jradcode", "YourSecurePassword");
+string hash = hasher.HashPassword("jradcode", "Playstation6!");
 Console.WriteLine("--------------------------------------------------");
 Console.WriteLine("COPY THIS HASH:");
 Console.WriteLine(hash);

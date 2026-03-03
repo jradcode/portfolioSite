@@ -5,6 +5,7 @@ import { Project } from '../../models/project.model';
 import { NgOptimizedImage } from '@angular/common';
 import { ProjectService } from '../../../services/api.service';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-project-card',
@@ -16,6 +17,7 @@ export class projectCard {
   project = input.required<Project>();
   currentImgIndex = signal(0);
   private projectService = inject(ProjectService);
+  public authService = inject(AuthService);
 
   // Add this inside your projectCard class
   setImgIndex(index: number) {

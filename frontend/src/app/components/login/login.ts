@@ -22,18 +22,22 @@ export class Login {
   errorMessage = '';
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      
-      this.authService.login({ username: username!, password: password! }).subscribe({
-        next: () => {
-          this.router.navigate(['/home']);; // Go to projects on success
-        },
-        error: (err) => {
-          this.errorMessage = 'Invalid username or password';
-          console.error('Login failed', err);
-        }
-      });
-    }
+  if (this.loginForm.valid) {
+    const { username, password } = this.loginForm.value;
+    
+    // Change 'username' to 'Username' to match your C# Record
+    this.authService.login({ 
+      Username: username!, 
+      Password: password! 
+    }).subscribe({
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.errorMessage = 'Invalid username or password';
+        console.error('Login failed', err);
+      }
+    });
   }
+}
 }

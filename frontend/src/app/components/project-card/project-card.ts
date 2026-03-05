@@ -19,13 +19,12 @@ export class projectCard {
   private projectService = inject(ProjectService);
   public authService = inject(AuthService);
 
-  // Add this inside your projectCard class
   setImgIndex(index: number) {
     // Update the signal with the specific index passed from the HTML
     this.currentImgIndex.set(index);
   }
 
-  // 1. Centralized logic to handle the JSON string vs Array issue
+  // logic to handle the JSON string vs Array issue
   imageList = computed(() => {
     const raw = this.project().images;
     if (!raw) return [];
@@ -38,7 +37,7 @@ export class projectCard {
     }
   });
 
-  // 2. Uses the imageList to figure out exactly what to show
+  //  Uses the imageList to figure out exactly what to show
   displayImageUrl = computed(() => {
     const images = this.imageList();
     if (images.length === 0) return 'assets/placeholder.png';

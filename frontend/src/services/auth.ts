@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core'; // Added i
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 
-// 1. Add this interface so TypeScript knows what "response" is
+// Add this interface so TypeScript knows what "response" is
 interface LoginResponse {
   token: string;
 }
@@ -19,7 +19,6 @@ export class AuthService {
   isLoggedIn = computed(() => !!this.#token());
 
  // Update the 'credentials' type to use PascalCase
-  // Update the 'credentials' type to use PascalCase
 login(credentials: { Username: string; Password: string }) { 
     return this.http.post<LoginResponse>(this.API_URL, credentials).pipe(
       tap((response) => {

@@ -1,3 +1,7 @@
+
+<!-- This handles the individual project card design and layout and shows the Project model data and images. It is a carousel style.
+  Only shows Edit and Delete buttons when logged in. This project-card will populate in the home page. -->
+  
 <div [routerLink]="['/project', project().id]" 
     (mouseenter)="preloadNext()"
      class="group relative flex flex-col cursor-pointer overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 

@@ -4,11 +4,12 @@ import { environment } from '../environments/environment'; // Master config
 import { Project } from '../app/models/project.model';
 import { Observable, of, tap, catchError } from 'rxjs';
 
+//This is the frontend API that accepts the C# backend API
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
   private http = inject(HttpClient);
   
-  // This will match your [Route("api/projects")] in C#
+  // This will match routes [Route("api/projects")] in C#
   private apiUrl = `${environment.apiUrl}/projects`;
 
   projects = signal<Project[]>([]);
@@ -17,18 +18,17 @@ export class ProjectService {
   loadProjects(): Observable<Project[]> {
     this.loading.set(true);
 
-    // We hit the API. If it fails, the console will stay RED until we fix the connection.
+    // If it fails, the console will stay RED until we fix the connection.
     return this.http.get<Project[]>(this.apiUrl).pipe(
       tap(data => {
-        console.log('API RESPONSE RECEIVED:', data);
+        //console.log('API Response Received:', data);
         this.projects.set(data);
         this.loading.set(false);
       }),
       catchError(err => {
-        console.error('API IS BROKEN. FIX THE CONNECTION:', err);
+        console.error('API is Broken. Fix Connection:', err);
         this.loading.set(false);
-        // We return an empty array instead of mocks so the UI stays empty 
-        // until the API is actually fixed.
+        // return an empty array instead of mocks so the UI stays empty 
         return of([]); 
       })
     );
@@ -41,9 +41,9 @@ export class ProjectService {
     return this.http.post<Project>(this.apiUrl, project).pipe(
       tap(newProj => {
         // Log the response to verify the Narrative is coming back from .NET
-        console.log('CREATED PROJECT FROM API:', newProj);
+        console.log('Created Project From API:', newProj);
         
-        // Optimistic UI update: add the new project to the signal list
+        // add the new project to the signal list
         this.projects.update(current => [...current, newProj]);
       })
     );
@@ -60,16 +60,16 @@ export class ProjectService {
     );
   }
 
-  // 1. The Instant Signal Look-up (Keep this)
+  // The Instant Signal Look-up
   getProjectById(id: number): Project | undefined {
     return this.projects().find(p => p.id === id);
   }
 
-  // 2. The Deep-Link API Fetch (Add this)
+  // The Deep-Link API Fetch
   fetchProjectById(id: number): Observable<Project> {
     return this.http.get<Project>(`${this.apiUrl}/${id}`).pipe(
       tap(project => {
-        // Bonus: If the project isn't in our signal list yet, add/update it!
+        // If the project isn't in the signal list yet, add/update it!
         this.projects.update(current => {
           const exists = current.find(p => p.id === project.id);
           return exists ? current.map(p => p.id === project.id ? project : p) : [...current, project];

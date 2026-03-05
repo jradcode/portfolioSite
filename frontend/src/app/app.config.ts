@@ -7,13 +7,13 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // 1. Enables the high-performance "Zoneless" mode
+    // Enables the high-performance "Zoneless" mode
     provideZonelessChangeDetection(), 
     
-    // 2. Standard Routing
+    // Standard Routing
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
 
-    // 3. Modern HTTP client (optimized for 2026 browsers)
+    // Modern HTTP client (optimized for 2026 browsers)
     provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
   ]
 };

@@ -1,4 +1,4 @@
-
+//This is a data file to test the frontend layout style in the home page where the projects are at
 
 //now I'm getting the data From C#
 import { Project } from '../models/project.model';

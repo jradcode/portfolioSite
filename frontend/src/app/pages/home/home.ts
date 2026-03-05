@@ -1,8 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
-//import { MOCK_PROJECTS } from '../../data/mock-projects';
+//import { MOCK_PROJECTS } from '../../data/mock-projects'; //for testing
 import { ProjectService } from '../../../services/api.service';
-import { Project } from '../../models/project.model';
-//import { RouterLink } from '@angular/router';
+//import { Project } from '../../models/project.model'; //for testing
 import { projectCard } from '../../components/project-card/project-card';
 
 @Component({

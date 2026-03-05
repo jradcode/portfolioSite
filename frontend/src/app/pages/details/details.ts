@@ -23,10 +23,9 @@ export class details implements AfterViewInit {
   // Bound from URL via provideRouter withComponentInputBinding()
   id = input.required<string>(); 
 
-  // CHANGED: Use a regular signal instead of computed so we can manually update it with API data
   project = signal<Project | undefined>(undefined);
 
-  // 2. Process images: Remains a computed, but now reacts to our 'project' signal
+  //Process images: Remains a computed, but now reacts to 'project' signal
   fullImageUrls = computed(() => {
     const proj = this.project();
     
@@ -56,7 +55,7 @@ export class details implements AfterViewInit {
   });
 
   constructor() {
-    // FIX: This effect watches the ID input. When the ID changes (or the page loads),
+    // This effect watches the ID input. When the ID changes (or the page loads),
     // it fetches the FULL project details (including narrative) from the API.
     effect(() => {
       const numericId = Number(this.id());

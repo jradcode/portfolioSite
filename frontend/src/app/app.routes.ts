@@ -1,3 +1,4 @@
+//This organizes all the routes for the app
 import { Routes } from '@angular/router';
 import { home } from './pages/home/home';
 import { about } from './pages/about/about';
@@ -17,7 +18,7 @@ export const routes: Routes = [
   { path: 'resume', component: resume },
   { path: 'project/:id', component: details },
   
-  // 2. Attach the guard to the protected admin routes
+  // Attach the guard to the protected admin routes
   { 
     path: 'add-project', 
     component: AddProject, 

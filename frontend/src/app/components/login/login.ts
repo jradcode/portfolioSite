@@ -21,11 +21,11 @@ export class Login {
 
   errorMessage = '';
 
+  //Handles form submit
   onSubmit() {
   if (this.loginForm.valid) {
     const { username, password } = this.loginForm.value;
-    
-    // Change 'username' to 'Username' to match your C# Record
+    //Makes sure the backend variables match frontend
     this.authService.login({ 
       Username: username!, 
       Password: password! 

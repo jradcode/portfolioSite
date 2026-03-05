@@ -1,6 +1,6 @@
 import { Component, input, output, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Project, ProjectNarrative } from '../../models/project.model'; //model is split into two interfaces
+import { Project, ProjectNarrative } from '../../models/project.model';
 
 @Component({
   selector: 'app-project-form',
@@ -15,8 +15,9 @@ export class ProjectForm {
 
   project = signal<Project>(this.getEmptyProject());
   
-  // Track drag state for UI styling
+  // State Signals
   isDragging = signal(false);
+  isLoading = signal(false); 
   techString = signal<string>('');
 
   constructor() {
@@ -29,10 +30,10 @@ export class ProjectForm {
         this.project.set(this.getEmptyProject());
         this.techString.set('');
       }
-      }, { allowSignalWrites: true }); 
+    }, { allowSignalWrites: true }); 
   }
 
-  // --- Image Handling Logic ---
+  // --- Image Handling ---
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -44,14 +45,13 @@ export class ProjectForm {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
-
     const files = event.dataTransfer?.files;
     if (files) this.processFiles(files);
   }
+
   onDragLeave(event: DragEvent) {
-  this.isDragging.set(false);
-}
- 
+    this.isDragging.set(false);
+  }
 
   onFileSelected(event: any) {
     const files = event.target.files;
@@ -64,7 +64,6 @@ export class ProjectForm {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           const base64String = e.target.result;
-          // Append new image to the existing array
           this.project.update(p => ({
             ...p,
             images: [...p.images, base64String]
@@ -82,66 +81,65 @@ export class ProjectForm {
     }));
   }
 
-  // --- Existing Helper Methods ---
+  // --- Data Binding Helpers ---
 
   updateField(field: keyof Project, value: any) {
     this.project.update(p => ({ ...p, [field]: value }));
   }
 
   updateNarrative(field: keyof ProjectNarrative, value: string) {
-  this.project.update(p => ({
-    ...p,
-    narrative: {
-      // Default values if narrative was null
-      ...(p.narrative || { id: 0, backStory: '', designPhilosophy: '', technicalChallenges: '' }),
-      [field]: value
-    }
-  }));
-}
+    this.project.update(p => ({
+      ...p,
+      narrative: {
+        ...(p.narrative || { id: 0, backStory: '', designPhilosophy: '', technicalChallenges: '' }),
+        [field]: value
+      }
+    }));
+  }
 
- updateTech(value: string) {
-  this.techString.set(value); // Keep the string as the user types it
-  const techArray = value.split(',')
-    .map(t => t.trim())
-    .filter(t => t !== '');
-  
-  this.project.update(p => ({ ...p, technologies: techArray }));
-}
+  updateTech(value: string) {
+    this.techString.set(value);
+    const techArray = value.split(',').map(t => t.trim()).filter(t => t !== '');
+    this.project.update(p => ({ ...p, technologies: techArray }));
+  }
 
-onSubmit() {
-  const currentProject = this.project();
-  const isEdit = !!this.initialData();
+  // --- Submit Logic ---
 
-  // Explicitly typing the payload as Project
-  const payload: Project = {
-    ...currentProject,
-    id: isEdit ? currentProject.id : 0,
-    narrative: currentProject.narrative 
-      ? {
-          ...currentProject.narrative,
-          // Shared PK logic: Narrative ID must match Project ID
-          id: isEdit ? currentProject.id : 0 
-        } 
-      : null
-  };
+  onSubmit() {
+    if (this.isLoading()) return;
+    this.isLoading.set(true);
 
-  this.submitted.emit(payload);
-}
+    const currentProject = this.project();
+    const isEdit = !!this.initialData();
 
- private getEmptyProject(): Project {
-  return {
-    id: 0, 
-    name: '', 
-    description: '', 
-    images: [], 
-    githubUrl: '', 
-    technologies: [],
-    narrative: { 
-      id: 0, // Add this
-      backStory: '', 
-      designPhilosophy: '', 
-      technicalChallenges: '' 
-    }
-  };
-}
+    const payload: Project = {
+      ...currentProject,
+      id: isEdit ? (currentProject.id ?? 0) : 0,
+      narrative: currentProject.narrative 
+        ? {
+            ...currentProject.narrative,
+            id: isEdit ? (currentProject.id ?? 0) : 0 
+          } 
+        : null
+    };
+
+    this.submitted.emit(payload);
+  }
+
+  private getEmptyProject(): Project {
+    return {
+      id: 0, 
+      name: '', 
+      description: '', 
+      images: [], 
+      githubUrl: '', 
+      technologies: [],
+      narrative: { 
+        id: 0, 
+        backStory: '', 
+        designPhilosophy: '', 
+        technicalChallenges: '' 
+      }
+    };
+  }
 }

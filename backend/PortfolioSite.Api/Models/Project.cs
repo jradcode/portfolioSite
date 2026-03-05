@@ -1,20 +1,31 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PortfolioSite.Api.Models
 {
     public class Project
     {
         [Key]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
+
+        [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("images")]
         public string[] Images { get; set; } = [];
+
+        [JsonPropertyName("githubUrl")]
         public string GithubUrl { get; set; } = string.Empty;
+
+        [JsonPropertyName("technologies")]
         public string[] Technologies { get; set; } = [];
 
-        // Here is the connection! 
-        // We tell C# that the "Narrative" property uses the class we defined above.
-        public virtual ProjectNarrative Narrative { get; set; } = null!;
+        // Removed 'virtual' to prevent Lazy Loading issues in Minimal APIs
+        [JsonPropertyName("narrative")]
+        public ProjectNarrative Narrative { get; set; } = null!;
     }
 }

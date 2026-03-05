@@ -2,7 +2,6 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment'; // Master config
 import { Project } from '../app/models/project.model';
-//import { MOCK_PROJECTS } from '../app/data/mock-projects';
 import { Observable, of, tap, catchError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -15,32 +14,35 @@ export class ProjectService {
   projects = signal<Project[]>([]);
   loading = signal<boolean>(false);
 
- loadProjects(): Observable<Project[]> {
-  this.loading.set(true);
+  loadProjects(): Observable<Project[]> {
+    this.loading.set(true);
 
-  // We hit the API. If it fails, the console will stay RED until we fix the connection.
-  return this.http.get<Project[]>(this.apiUrl).pipe(
-    tap(data => {
-      console.log('API RESPONSE RECEIVED:', data);
-      this.projects.set(data);
-      this.loading.set(false);
-    }),
-    catchError(err => {
-      console.error('API IS BROKEN. FIX THE CONNECTION:', err);
-      this.loading.set(false);
-      // We return an empty array instead of mocks so the UI stays empty 
-      // until the API is actually fixed.
-      return of([]); 
-    })
-  );
-}
+    // We hit the API. If it fails, the console will stay RED until we fix the connection.
+    return this.http.get<Project[]>(this.apiUrl).pipe(
+      tap(data => {
+        console.log('API RESPONSE RECEIVED:', data);
+        this.projects.set(data);
+        this.loading.set(false);
+      }),
+      catchError(err => {
+        console.error('API IS BROKEN. FIX THE CONNECTION:', err);
+        this.loading.set(false);
+        // We return an empty array instead of mocks so the UI stays empty 
+        // until the API is actually fixed.
+        return of([]); 
+      })
+    );
+  }
 
-// --- ADDED FOR THE CREATE/EDIT PAGES ---
+  // --- ADDED FOR THE CREATE/EDIT PAGES ---
 
   // POST: Create a new project
   createProject(project: Project): Observable<Project> {
     return this.http.post<Project>(this.apiUrl, project).pipe(
       tap(newProj => {
+        // Log the response to verify the Narrative is coming back from .NET
+        console.log('CREATED PROJECT FROM API:', newProj);
+        
         // Optimistic UI update: add the new project to the signal list
         this.projects.update(current => [...current, newProj]);
       })
@@ -57,24 +59,25 @@ export class ProjectService {
       })
     );
   }
+
+  // 1. The Instant Signal Look-up (Keep this)
   getProjectById(id: number): Project | undefined {
     return this.projects().find(p => p.id === id);
   }
 
-  // 1. The Instant Signal Look-up (Keep this)
+  // 2. The Deep-Link API Fetch (Add this)
+  fetchProjectById(id: number): Observable<Project> {
+    return this.http.get<Project>(`${this.apiUrl}/${id}`).pipe(
+      tap(project => {
+        // Bonus: If the project isn't in our signal list yet, add/update it!
+        this.projects.update(current => {
+          const exists = current.find(p => p.id === project.id);
+          return exists ? current.map(p => p.id === project.id ? project : p) : [...current, project];
+        });
+      })
+    );
+  }
 
-// 2. The Deep-Link API Fetch (Add this)
-fetchProjectById(id: number): Observable<Project> {
-  return this.http.get<Project>(`${this.apiUrl}/${id}`).pipe(
-    tap(project => {
-      // Bonus: If the project isn't in our signal list yet, add/update it!
-      this.projects.update(current => {
-        const exists = current.find(p => p.id === project.id);
-        return exists ? current.map(p => p.id === project.id ? project : p) : [...current, project];
-      });
-    })
-  );
-}
   // DELETE: Remove a project from the system
   deleteProject(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
@@ -90,5 +93,3 @@ fetchProjectById(id: number): Observable<Project> {
     );
   }
 }
-
-//return this.http.post('https://localhost:7143/api/auth/login', credentials); auth for future?

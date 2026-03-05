@@ -1,13 +1,13 @@
-import { Component, input, computed, AfterViewInit, effect, inject } from '@angular/core';
+import { Component, input, computed, AfterViewInit, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Project } from '../../models/project.model';
 import { ProjectService } from '../../../services/api.service';
 import { NgOptimizedImage } from '@angular/common';
 import { environment } from '../../../environments/environment';
+import { first } from 'rxjs';
 
 // Materialize Global Variable
-//details page
 declare var M: any;
 
 @Component({
@@ -20,56 +20,65 @@ declare var M: any;
 export class details implements AfterViewInit {
   private projectService = inject(ProjectService);
   
-  // Bound automatically from the URL /project/:id via provideRouter(routes, withComponentInputBinding())
+  // Bound from URL via provideRouter withComponentInputBinding()
   id = input.required<string>(); 
 
-  // 1. Find the project in the shared service signal
-  project = computed(() => {
-    const numericId = Number(this.id());
-    return this.projectService.projects().find(p => p.id === numericId);
-  });
+  // CHANGED: Use a regular signal instead of computed so we can manually update it with API data
+  project = signal<Project | undefined>(undefined);
 
-  // 2. Process images: Handle JSON strings, Base64, and Server URLs
+  // 2. Process images: Remains a computed, but now reacts to our 'project' signal
   fullImageUrls = computed(() => {
     const proj = this.project();
     
-    // Safety check: No project or no images
     if (!proj || !proj.images) {
       return ['assets/placeholder.png'];
     }
 
     let imageArray: string[] = [];
 
-    // Step A: Parse if stringified JSON, otherwise use as is
     try {
       imageArray = typeof proj.images === 'string' 
         ? JSON.parse(proj.images) 
         : proj.images;
     } catch (e) {
-      // If parsing fails, it might be a single raw string
       imageArray = [proj.images as unknown as string];
     }
 
     if (imageArray.length === 0) return ['assets/placeholder.png'];
 
-    // Step B: Transform paths into full valid URLs
     return imageArray.map(path => {
-      // Return immediately if it's Base64 or an external absolute URL
       if (path.startsWith('data:image') || path.startsWith('http')) {
         return path;
       }
-      
-      // Fix potential missing slash and append server URL
       const cleanPath = path.startsWith('/') ? path : `/${path}`;
       return `${environment.serverUrl}${cleanPath}`;
     });
   });
 
   constructor() {
-    // Re-initialize Materialize zoom effects whenever the project data changes
+    // FIX: This effect watches the ID input. When the ID changes (or the page loads),
+    // it fetches the FULL project details (including narrative) from the API.
+    effect(() => {
+      const numericId = Number(this.id());
+      if (numericId) {
+        this.projectService.fetchProjectById(numericId)
+          .pipe(first()) // Automatically unsubs after one emission
+          .subscribe({
+            next: (fullProject) => {
+              console.log('Full Project Loaded with Narrative:', fullProject);
+              this.project.set(fullProject);
+            },
+            error: (err) => {
+              console.error('Error fetching project details:', err);
+              this.project.set(undefined);
+            }
+          });
+      }
+    });
+
+    // Re-initialize Materialize zoom effects
     effect(() => {
       if (this.project()) {
-        // requestAnimationFrame ensures the DOM has rendered the new @for loop
         requestAnimationFrame(() => this.initMaterialbox());
       }
     });
@@ -79,7 +88,6 @@ export class details implements AfterViewInit {
     this.initMaterialbox();
   }
 
-  // Materialize CSS "Materialbox" (Lightbox) initialization
   private initMaterialbox() {
     const elems = document.querySelectorAll('.materialboxed');
     if (typeof M !== 'undefined' && elems.length > 0) {

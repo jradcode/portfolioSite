@@ -79,7 +79,8 @@ namespace PortfolioSite.Api.Endpoints
                 try
                 {
                     await db.SaveChangesAsync();
-                    return Results.Created($"/api/projects/{project.Id}", project);
+                    var completeProject = await db.Projects.Include(p => p.Narrative).FirstOrDefaultAsync(p => p.Id == project.Id);
+                    return Results.Created($"/api/projects/{project.Id}", completeProject);
                 }
                 catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23505")
                 {

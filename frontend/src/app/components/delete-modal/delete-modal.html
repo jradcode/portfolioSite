@@ -1,0 +1,33 @@
+<div class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity" (click)="onAbort()"></div>
+  
+  <div class="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-2xl">
+    
+    <div class="absolute top-0 left-0 w-full h-[2px] bg-red-600 shadow-[0_0_15px_rgba(220,38,38,1)]"></div>
+    
+    <div class="relative z-10">
+      <h2 class="text-2xl font-black uppercase italic tracking-tighter text-white mb-4">
+        Delete Project?
+      </h2>
+
+      <p class="text-slate-400 mb-8 leading-relaxed font-mono text-[11px] uppercase tracking-widest">
+        Are you sure you want to delete <span class="text-white font-bold">"{{ modalService.projectName() }}"</span>? 
+        This action is permanent and cannot be undone.
+      </p>
+
+      <div class="flex gap-4">
+        <button (click)="onAbort()" 
+          class="flex-1 px-4 py-3 rounded-xl border border-slate-700 text-slate-500 font-bold uppercase tracking-widest text-[10px] hover:bg-slate-800 hover:text-slate-300 transition-all">
+          Cancel
+        </button>
+        
+        <button (click)="onExecute()" 
+          class="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-black uppercase tracking-widest text-[10px] hover:bg-red-500 shadow-lg shadow-red-600/20 transition-all active:scale-95">
+          Confirm Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+  </div>
+</div>

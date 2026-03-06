@@ -1,6 +1,24 @@
 <!-- The project-form component is inserted into this page-->
 
-<app-project-form 
-  (submitted)="createProject($event)" 
-  (cancelled)="goBack()">
-</app-project-form>
+<div class="min-h-screen bg-black py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    
+    <header class="mb-12 border-l-4 border-blue-500 pl-6">
+      <div class="flex items-center gap-2 text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">
+        <span>New Entry</span>
+        <span class="text-blue-500">/</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">
+        Add Project  
+      </h1>
+      <p class="text-slate-500 font-mono text-xs mt-2 uppercase tracking-widest">
+        Target_Status: INITIALIZING_NEW_RECORD...
+      </p>
+    </header>
+
+    <app-project-form 
+      (submitted)="createProject($event)" 
+      (cancelled)="goBack()" />
+
+  </div>
+</div>

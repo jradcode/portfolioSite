@@ -5,17 +5,20 @@ import { navbar } from './components/navbar/navbar';
 import { Spinner } from './components/spinner/spinner';
 import { ProjectService } from '../services/api.service';
 import { environment } from '../environments/environment';
+import { DeleteModal } from './components/delete-modal/delete-modal'; 
+import { DeleteModalService } from '../services/delete-modal.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, header, navbar, Spinner],
+  imports: [RouterOutlet, header, navbar, Spinner, DeleteModal],
   templateUrl: './app.component.html',
   //styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   // Inject the service to manage global project data
   private projectService = inject(ProjectService);
+  protected modalService = inject(DeleteModalService);
   
   title = signal("Jarrad's Portfolio");
 

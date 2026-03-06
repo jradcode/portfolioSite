@@ -2,6 +2,7 @@ import { Component, input, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Project } from '../../models/project.model';
+import { DeleteModalService } from '../../../services/delete-modal.service';
 import { NgOptimizedImage } from '@angular/common';
 import { ProjectService } from '../../../services/api.service';
 import { environment } from '../../../environments/environment';
@@ -17,6 +18,7 @@ export class projectCard {
   project = input.required<Project>();
   currentImgIndex = signal(0);
   private projectService = inject(ProjectService);
+  private modalService = inject(DeleteModalService);
   public authService = inject(AuthService);
 
   setImgIndex(index: number) {
@@ -54,12 +56,16 @@ export class projectCard {
   });
 
  deleteProject(id: number) {
-  if (confirm('Will delete project permanently. Proceed?')) {
-    this.projectService.deleteProject(id).subscribe({
-      next: () => console.log('UI updated via service signal.'),
-      error: (err) => alert('Delete Failed!' + err.message)
-    });
-  }
+  this.modalService.open(
+    id, 
+    this.project().name || 'Unknown Project', // Try .name or .title if .projectName fails
+    () => {
+      this.projectService.deleteProject(id).subscribe({
+        next: () => console.log('Project Deleted!'),
+        error: (err) => console.error('Delete Failed!', err)
+      });
+    }
+  );
 }
   nextImage(event: MouseEvent) {
     event.preventDefault();

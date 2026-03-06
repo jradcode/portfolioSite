@@ -1,4 +1,3 @@
-<!-- This page displays all the projects at once. This is the main index page. -->
 <div class="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-500/30">
 
   <main class="max-w-7xl mx-auto px-6 py-16">
@@ -14,23 +13,30 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
       
-     @for (item of projectService.projects(); track item.id) {
-        
-        @defer (on viewport) {
-          <app-project-card [project]="item" class="h-full"></app-project-card>
-        } @placeholder {
-          <div class="h-[450px] w-full animate-pulse rounded-2xl bg-slate-200 border border-slate-300"></div>
+      @if (spinnerService.isFetching() && projectService.projects().length === 0) {
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <app-project-skeleton />
         }
+      } @else {
+        
+        @for (item of projectService.projects(); track item.id) {
+          
+          @defer (on viewport) {
+            <app-project-card [project]="item" class="h-full"></app-project-card>
+          } @placeholder {
+            <app-project-skeleton />
+          }
 
-      } @empty {
-        <div class="col-span-full py-20 text-center">
-          <div class="inline-flex p-6 rounded-full bg-slate-100 mb-4">
-            <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+        } @empty {
+          <div class="col-span-full py-20 text-center">
+            <div class="inline-flex p-6 rounded-full bg-slate-100 mb-4">
+              <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="text-slate-500 italic text-lg">No projects available at the moment.</p>
           </div>
-          <p class="text-slate-500 italic text-lg">No projects available at the moment.</p>
-        </div>
+        }
       }
 
     </div>

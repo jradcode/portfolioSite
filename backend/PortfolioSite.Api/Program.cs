@@ -10,7 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Setup Authentication
+// Setup Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -29,7 +29,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// 1. SERVICES
+// Services
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -45,7 +45,7 @@ builder.Services.AddProblemDetails(); // Standardizes error responses
 builder.Services.ConfigureHttpJsonOptions(options => {
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 });
-// In Program.cs, before var app = builder.Build();
+
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // Set to 100MB
@@ -65,9 +65,9 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
-// 2. MIDDLEWARE
+// Middleware
 
-// --- IMAGE SERVING ---
+// --- Image Servicing ---
 // This enables serving files from the wwwroot/images folder
 app.UseStaticFiles();
 app.UseHttpsRedirection();
@@ -87,32 +87,7 @@ app.UseAuthorization();
 //the Api
 app.MapPortfolioSiteEndpoints();
 
-
-//for testing login only 
-
-//copy and paste passwordhash and that username
-//{
-    //"Admin": {
-        //"Username": "jradcode",
-    //PasswordHash": "AQAAAAIAAYagAAAAE..."
-    //},
-var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<string>();
-// Replace 'YourSecurePassword' with what you want to type into your Angular form
-string hash = hasher.HashPassword("jradcode", "Playstation6!");
-Console.WriteLine("--------------------------------------------------");
-Console.WriteLine("COPY THIS HASH:");
-Console.WriteLine(hash);
-Console.WriteLine("--------------------------------------------------");
-
 app.Run();
-
-
-
-
-
-
-
-
 
 
 /* ---------------------------------------------------------

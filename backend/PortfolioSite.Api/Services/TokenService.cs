@@ -9,14 +9,13 @@ public class TokenService(IConfiguration config): ITokenService
 {
     public string CreateToken(string username)
     {
-        // Pull the key you set in appsettings.json
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(ClaimTypes.Role, "Admin"), // This matches your authorization requirements
+            new Claim(ClaimTypes.Role, "Admin"), // This matches authorization requirements
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

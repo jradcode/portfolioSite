@@ -18,10 +18,10 @@ namespace PortfolioSite.Api.Endpoints
                 var adminUser = config["Admin:Username"];
                 var adminHash = config["Admin:PasswordHash"];
 
-                // 1. Log what is happening to your Terminal
-                Console.WriteLine($"Login Attempt: User={login.Username}, ConfigUser={adminUser}");
+                // Log what is happening to your Terminal
+                //Console.WriteLine($"Login Attempt: User={login.Username}, ConfigUser={adminUser}");
 
-                // 2. Check if the Username is correct
+                // Check if the Username is correct
                 if (string.IsNullOrEmpty(login.Username) || login.Username != adminUser)
                 {
                     return Results.Unauthorized();
@@ -29,17 +29,17 @@ namespace PortfolioSite.Api.Endpoints
 
                 var hasher = new PasswordHasher<string>();
 
-                // 3. THE UPDATED LINE: Verify the password using the SAME identity string used to hash it
+                // Verify the password using the same identity string used to hash it
                 var result = hasher.VerifyHashedPassword("jradcode", adminHash!, login.Password);
 
-                // 4. If the password (or the identity string "jradcode") doesn't match, fail.
+                // If the password doesn't match, fail.
                 if (result == PasswordVerificationResult.Failed)
                 {
-                    Console.WriteLine("DEBUG: Password verification failed.");
+                    Console.WriteLine("Password verification failed.");
                     return Results.Unauthorized();
                 }
 
-                // 5. Success!
+                // Success!
                 var token = tokenService.CreateToken(adminUser!);
                 return Results.Ok(new { token });
             });
@@ -52,17 +52,17 @@ namespace PortfolioSite.Api.Endpoints
                         .AsNoTracking()
                         .ToListAsync());
 
-            // GET BY ID
+            // Get by Id
             group.MapGet("/{id}", async (int id, PortfolioDbContext db) =>
                 await db.Projects
                         .Include(p => p.Narrative)
                         .FirstOrDefaultAsync(p => p.Id == id)
                 is Project project ? Results.Ok(project) : Results.NotFound());
 
-            // POST (CREATE)
+            // Post (Create Project)
             group.MapPost("/", async (Project project, PortfolioDbContext db) =>
             {
-                // 1. Ensure the incoming IDs are 0. 
+               
                 // If Angular sends 'null' or a number, it can trip the PK constraint.
                 project.Id = 0;
 
@@ -71,7 +71,7 @@ namespace PortfolioSite.Api.Endpoints
                     // For Shared PK, the Narrative ID must be 0 
                     // so it can inherit the Project ID after the Project is saved.
                     project.Narrative.Id = 0;
-                    project.Narrative.Project = project; // Explicitly link them
+                    project.Narrative.Project = project;
                 }
 
                 db.Projects.Add(project);
@@ -88,7 +88,7 @@ namespace PortfolioSite.Api.Endpoints
                 }
             }).RequireAuthorization();
 
-            //PUT (UPDATE) Edit Project
+            // Put (Update) Edit Project
             group.MapPut("/{id}", async (int id, Project inputProject, PortfolioDbContext db) =>
             {
                 var project = await db.Projects
@@ -97,14 +97,14 @@ namespace PortfolioSite.Api.Endpoints
 
                 if (project is null) return Results.NotFound();
 
-                // 1. Update Core Project Fields
+                // Update Core Project Fields
                 project.Name = inputProject.Name;
                 project.Description = inputProject.Description;
                 project.GithubUrl = inputProject.GithubUrl;
                 project.Technologies = inputProject.Technologies;
                 project.Images = inputProject.Images;
 
-                // 2. Update or Initialize Narrative
+                // Update or Initialize Narrative
                 if (inputProject.Narrative != null)
                 {
                     if (project.Narrative == null)
@@ -112,7 +112,7 @@ namespace PortfolioSite.Api.Endpoints
                         // If narrative didn't exist, create it and link it
                         project.Narrative = new ProjectNarrative
                         {
-                            Id = project.Id, // Shared Primary Key
+                            Id = project.Id,
                             BackStory = inputProject.Narrative.BackStory,
                             DesignPhilosophy = inputProject.Narrative.DesignPhilosophy,
                             TechnicalChallenges = inputProject.Narrative.TechnicalChallenges
@@ -120,7 +120,7 @@ namespace PortfolioSite.Api.Endpoints
                     }
                     else
                     {
-                        // If it exists, just update the fields
+                        // If it exists, update the fields
                         project.Narrative.BackStory = inputProject.Narrative.BackStory;
                         project.Narrative.DesignPhilosophy = inputProject.Narrative.DesignPhilosophy;
                         project.Narrative.TechnicalChallenges = inputProject.Narrative.TechnicalChallenges;
@@ -131,13 +131,12 @@ namespace PortfolioSite.Api.Endpoints
                 return Results.Ok(project);
             }).RequireAuthorization();
 
-            // DELETE
+            // Delete/Destory Request
             group.MapDelete("/{id}", async (int id, PortfolioDbContext db, IWebHostEnvironment env) =>
             {
                 var project = await db.Projects.FindAsync(id);
                 if (project is null) return Results.NotFound();
 
-                // OPTIONAL: Delete the physical folder for this project
                 // This assumes your folder name matches a slugified version of project.Name
                 var slug = project.Name.ToLower().Replace(" ", "-");
                 var folderPath = Path.Combine(env.WebRootPath, "images", slug);
@@ -152,7 +151,7 @@ namespace PortfolioSite.Api.Endpoints
                 return Results.NoContent();
             }).RequireAuthorization();
 
-            // POST (UPLOAD IMAGE)
+            // Post (Upload Image)
             // This endpoint takes a file and the project name to create /images/project-name/file.webp
             group.MapPost("/upload", async (IFormFile file, string projectName, IImageService imageService) =>
             {
@@ -164,7 +163,7 @@ namespace PortfolioSite.Api.Endpoints
 
                 try
                 {
-                    // Call our SkiaSharp service
+                    // Call SkiaSharp service
                     string imagePath = await imageService.ProcessAndSaveImageAsync(file, projectName);
 
                     // Return the path so Angular can add it to the Project.Images array

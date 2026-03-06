@@ -17,13 +17,13 @@ namespace PortfolioSite.Api.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Configuring the 1-to-1 relationship with Shared Primary Key
+            // Configuring the 1-to-1 relationship with Shared Primary Key
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.Narrative)
                 .WithOne(n => n.Project) // Points back to the virtual Project property
                 .HasForeignKey<ProjectNarrative>(n => n.Id); // Narrative.Id is the link
 
-            // 2. Neon/PostgreSQL specific configuration for string arrays
+            // Neon/PostgreSQL specific configuration for string arrays
             // This ensures the database creates 'text[]' columns instead of trying to make a sub-table
             modelBuilder.Entity<Project>(entity =>
             {

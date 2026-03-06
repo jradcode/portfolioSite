@@ -24,7 +24,6 @@ namespace PortfolioSite.Api.Models
         [JsonPropertyName("technologies")]
         public string[] Technologies { get; set; } = [];
 
-        // Removed 'virtual' to prevent Lazy Loading issues in Minimal APIs
         [JsonPropertyName("narrative")]
         public ProjectNarrative Narrative { get; set; } = null!;
     }

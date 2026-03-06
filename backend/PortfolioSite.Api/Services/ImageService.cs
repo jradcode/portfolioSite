@@ -12,23 +12,23 @@ public class ImageService : IImageService
 
     public async Task<string> ProcessAndSaveImageAsync(IFormFile file, string projectName)
     {
-        // 1. Create the Slug
+        // Create the Slug
         var slug = projectName.ToLower().Trim().Replace(" ", "-");
         slug = new string(slug.Where(c => char.IsLetterOrDigit(c) || c == '-').ToArray());
 
-        // 2. Define the path (with a safety check for ContentRootPath)
-        // If WebRootPath is null, we use ContentRootPath/wwwroot
+        // Define the path (with a safety check for ContentRootPath)
+        // If WebRootPath is null, use ContentRootPath/wwwroot
         var rootPath = _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
         var folderPath = Path.Combine(rootPath, "images", slug);
 
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);
 
-        // 3. File naming
+        // File naming
         var fileName = $"{Guid.NewGuid()}.webp";
         var physicalPath = Path.Combine(folderPath, fileName);
 
-        // 4. SkiaSharp Processing
+        // SkiaSharp Processing
         using var stream = file.OpenReadStream();
         using (var codec = SKCodec.Create(stream))
         using (var bitmap = SKBitmap.Decode(codec))
@@ -38,17 +38,17 @@ public class ImageService : IImageService
             await File.WriteAllBytesAsync(physicalPath, data.ToArray());
         }
 
-        // 5. Return the Web-friendly path for your Neon DB
+        // Return the Web-friendly path for Neon DB
         return $"/images/{slug}/{fileName}";
     }
 
     public string SaveImage(string base64Data, string projectName)
     {
-        // 1. Clean the base64 string
+        // Clean the base64 string
         var base64Image = base64Data.Split(',')[1];
         var bytes = Convert.FromBase64String(base64Image);
 
-        // 2. Define the path
+        //Define the path
         var fileName = Guid.NewGuid().ToString() + ".webp"; // We like WebP!
         var folderPath = Path.Combine("wwwroot", "images", projectName.ToLower().Replace(" ", "-"));
 
@@ -56,10 +56,10 @@ public class ImageService : IImageService
 
         var fullPath = Path.Combine(folderPath, fileName);
 
-        // 3. Save to disk
+        // Save to disk
         System.IO.File.WriteAllBytes(fullPath, bytes);
 
-        // 4. Return the path to save in NEON
+        // Return the path to save in NEON
         return $"/images/{projectName.ToLower().Replace(" ", "-")}/{fileName}";
     }
 }

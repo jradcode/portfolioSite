@@ -53,15 +53,14 @@ export class projectCard {
     return `${environment.serverUrl}${cleanPath}`;
   });
 
-  deleteProject(id: number) {
-    if (confirm('CAUTION: Will delete project permanently. Proceed?')) {
-      this.projectService.deleteProject(id).subscribe({
-        next: () => console.log('UI updated via service signal.'),
-        error: (err) => alert('Purge sequence failed: ' + err.message)
-      });
-    }
+ deleteProject(id: number) {
+  if (confirm('Will delete project permanently. Proceed?')) {
+    this.projectService.deleteProject(id).subscribe({
+      next: () => console.log('UI updated via service signal.'),
+      error: (err) => alert('Delete Failed!' + err.message)
+    });
   }
-
+}
   nextImage(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation(); // Prevents the card's RouterLink from triggering

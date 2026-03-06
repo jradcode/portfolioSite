@@ -3,6 +3,7 @@
 
 /* 2. Tailwind v4 with layer syntax to bypass the @import warning */
 @import "tailwindcss" layer(tailwindcss);
+@import 'ngx-toastr/toastr';
 
 /* 3. Your Tailwind Theme Variables */
 @theme {
@@ -21,3 +22,66 @@ $theme: mat.define-theme((
 
 /* 5. Apply the theme to all components */
 @include mat.all-component-themes($theme);
+
+//for toasts
+#toast-container > div {
+  // Layout & Shape
+  width: 400px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  
+  // The "Glass" Effect from your card
+  background: rgba(15, 23, 42, 0.8) !important; // slate-900 with opacity
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  
+  // Typography - matching your uppercase tracking
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+  .toast-title {
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
+  }
+
+  .toast-message {
+    font-size: 14px;
+    font-weight: 500;
+    color: #94a3b8; // slate-400
+  }
+}
+
+// Success Toast - Matching your "Edit" emerald hover
+.toast-success {
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  .toast-title { color: #10b981; }
+  .toast-progress { background: #10b981 !important; }
+}
+
+// Error Toast - Matching your "Delete" red hover
+.toast-error {
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  .toast-title { color: #ef4444; }
+  .toast-progress { background: #ef4444 !important; }
+}
+
+// Info/Default - Matching your Blue 500
+.toast-info {
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  .toast-title { color: #3b82f6; }
+  .toast-progress { background: #3b82f6 !important; }
+}
+
+// Success Toast (Emerald/Green like your Edit button)
+.toast-success {
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  transition: all 0.3s ease; // Smooth the glow transition
+
+  &:hover {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3) !important;
+    border-color: rgba(16, 185, 129, 0.8) !important;
+  }
+}

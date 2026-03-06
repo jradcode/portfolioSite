@@ -4,6 +4,7 @@ import { ProjectService } from '../../../services/api.service';
 import { ProjectForm } from '../../components/project-form/project-form';
 import { Project } from '../../models/project.model';
 import { environment } from '../../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-project',
@@ -16,6 +17,7 @@ export class EditProject implements OnInit {
   private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   // This signal holds the project being edited
   projectToEdit = signal<Project | null>(null);
@@ -75,6 +77,8 @@ updateProject(updatedData: Project) {
   this.projectService.updateProject(finalPayload.id, finalPayload).subscribe({
     next: () => {
       this.isSubmitting.set(false);
+      this.toastr.success(`${finalPayload.name} Updated successfully`, 'PROJECT EDITED!', {
+        });
       this.router.navigate(['/projects']);
     },
     error: (err) => {

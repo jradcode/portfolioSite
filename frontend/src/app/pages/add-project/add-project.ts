@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ProjectService } from '../../../services/api.service';
 import { ProjectForm } from '../../components/project-form/project-form';
 import { Project } from '../../models/project.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-project',
@@ -14,6 +15,7 @@ import { Project } from '../../models/project.model';
 export class AddProject {
   private projectService = inject(ProjectService);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   /**
    * Called by (submitted)="createProject($event)" in HTML
@@ -22,6 +24,8 @@ export class AddProject {
     this.projectService.createProject(newProject).subscribe({
       next: (response) => {
         console.log('Project Successfully Added', response);
+        this.toastr.success(`${newProject.name} has been uploaded.`, 'ADDED PROJECT!', {
+        });
         // Navigate back to the gallery
         this.router.navigate(['/projects']); 
       },

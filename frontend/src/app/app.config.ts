@@ -3,6 +3,9 @@ import { provideRouter, withComponentInputBinding, withViewTransitions } from '@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from '../interceptors/auth-interceptor';
 import { loadingInterceptor } from '../interceptors/loading-interceptor';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { errorInterceptor } from '../interceptors/error-interceptor';
+import { provideToastr } from 'ngx-toastr';
 
 import { routes } from './app.routes';
 
@@ -15,6 +18,16 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
 
     // Modern HTTP client (optimized for 2026 browsers)
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, loadingInterceptor]))
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor])),
+    provideAnimationsAsync(),
+    
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      easeTime: 500,
+      newestOnTop: true,
+      preventDuplicates: true,
+      progressBar: true
+    }),
   ]
 };

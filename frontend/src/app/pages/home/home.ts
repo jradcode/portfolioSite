@@ -18,5 +18,4 @@ export class home {
   //using the api.service instead of the mock data
   public projectService = inject(ProjectService);
   public spinnerService = inject(SpinnerService);
- 
 }

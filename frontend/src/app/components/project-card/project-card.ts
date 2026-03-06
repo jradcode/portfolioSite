@@ -7,6 +7,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { ProjectService } from '../../../services/api.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../../services/auth';
+import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-project-card',
@@ -20,6 +22,7 @@ export class projectCard {
   private projectService = inject(ProjectService);
   private modalService = inject(DeleteModalService);
   public authService = inject(AuthService);
+   private toastr = inject(ToastrService);
 
   setImgIndex(index: number) {
     // Update the signal with the specific index passed from the HTML
@@ -55,17 +58,26 @@ export class projectCard {
     return `${environment.serverUrl}${cleanPath}`;
   });
 
- deleteProject(id: number) {
-  this.modalService.open(
-    id, 
-    this.project().name || 'Unknown Project', // Try .name or .title if .projectName fails
-    () => {
-      this.projectService.deleteProject(id).subscribe({
-        next: () => console.log('Project Deleted!'),
-        error: (err) => console.error('Delete Failed!', err)
-      });
-    }
-  );
+deleteProject(id: number) {
+  // Pass the id, the name, and the "Action" (the delete logic)
+  this.modalService.open(id, this.project().name, () => {
+    
+    // This code ONLY runs when the user clicks 'Confirm' in the modal
+    this.projectService.deleteProject(id).subscribe({
+      next: () => {
+        // SUCCESS: Show your beautiful custom toast
+        this.toastr.success(
+          `${this.project().name} has been eliminated.`, 
+          'PROJECT DELETED!'
+        );
+      },
+      error: (err) => {
+        // Your Global Interceptor handles the red toast
+        console.error('Delete failed:', err);
+      }
+    });
+
+  });
 }
   nextImage(event: MouseEvent) {
     event.preventDefault();

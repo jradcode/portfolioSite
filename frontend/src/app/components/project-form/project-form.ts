@@ -1,6 +1,7 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import { Component, input, output, signal, inject, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Project, ProjectNarrative } from '../../models/project.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-form',
@@ -12,6 +13,7 @@ export class ProjectForm {
   initialData = input<Project | null>(null);
   submitted = output<Project>();
   cancelled = output<void>();
+  private toastr = inject(ToastrService);
 
   project = signal<Project>(this.getEmptyProject());
   
@@ -58,19 +60,23 @@ export class ProjectForm {
     if (files) this.processFiles(files);
   }
 
-  private processFiles(files: FileList) {
-    Array.from(files).forEach(file => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const base64String = e.target.result;
-          this.project.update(p => ({
-            ...p,
-            images: [...p.images, base64String]
-          }));
-        };
-        reader.readAsDataURL(file);
-      }
+ private processFiles(files: FileList) {
+    const validImages = Array.from(files).filter(file => file.type.startsWith('image/'));
+    
+    if (validImages.length > 0) {
+      this.toastr.info(`Uploading ${validImages.length} image...`, 'IMAGE ADDED');
+    }
+
+    validImages.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64String = e.target.result;
+        this.project.update(p => ({
+          ...p,
+          images: [...p.images, base64String]
+        }));
+      };
+      reader.readAsDataURL(file);
     });
   }
 
@@ -107,6 +113,11 @@ export class ProjectForm {
 
   onSubmit() {
     if (this.isLoading()) return;
+
+    if (!this.project().name || !this.project().description) {
+      this.toastr.warning('Please fill in the project name and description.', 'SUBMIT FAILED!');
+      return;
+    }
     this.isLoading.set(true);
 
     const currentProject = this.project();

@@ -1,5 +1,9 @@
 <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity" (click)="onAbort()"></div>
+  
+  <div 
+    class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm transition-opacity duration-300" 
+    (click)="onAbort()">
+  </div>
   
   <div class="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-2xl">
     
@@ -12,7 +16,7 @@
 
       <p class="text-slate-400 mb-8 leading-relaxed font-mono text-[11px] uppercase tracking-widest">
         Are you sure you want to delete <span class="text-white font-bold">"{{ modalService.projectName() }}"</span>? 
-        This action is permanent and cannot be undone.
+        <br>This action is permanent.
       </p>
 
       <div class="flex gap-4">

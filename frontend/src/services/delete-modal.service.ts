@@ -38,6 +38,7 @@ export class DeleteModalService {
   close() {
     this.isOpen.set(false);
     this.projectId.set(null);
+    this.projectName.set('');
     this.confirmAction = null;
   }
 }

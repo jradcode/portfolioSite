@@ -2,6 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +17,7 @@ export class navbar {
   private router = inject(Router);
   private toastr = inject(ToastrService);
 
-  resumeUrl = signal('assets/docs/WebDevResume.pdf');
+  resumeUrl = signal(`${environment.apiUrl}/api/resume/download`);
 
   //Handles logout
   onLogout() {

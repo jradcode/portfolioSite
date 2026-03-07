@@ -174,6 +174,36 @@ namespace PortfolioSite.Api.Endpoints
                     return Results.Problem($"Image processing failed: {ex.Message}");
                 }
             }).DisableAntiforgery().RequireAuthorization(); // Essential for multipart/form-data in Minimal APIs
+
+            var resumeGroup = app.MapGroup("/api/resume");
+            // Use a generic internal name so you NEVER have to change this code again
+            const string fileName = "Web-Dev-Resume-2026.pdf";
+
+            resumeGroup.MapGet("/download", (IWebHostEnvironment env) =>
+            {
+                var filePath = Path.Combine(env.ContentRootPath, "Docs", fileName);
+
+                if (!File.Exists(filePath))
+                    return Results.NotFound("Resume file not found.");
+
+                // This is where you can keep the "Year" for the user's benefit
+                // You only change the '2026' here so the user sees a fresh date
+                return Results.File(filePath, "application/pdf", "Web-Dev-Resume-2026.pdf");
+            });
+
+            // Keep the POST just in case you ever want to build that Admin button!
+            resumeGroup.MapPost("/upload", async (IFormFile file, IWebHostEnvironment env) =>
+            {
+                var folderPath = Path.Combine(env.ContentRootPath, "Docs");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                return Results.Ok(new { message = "Uploaded!" });
+            }).DisableAntiforgery().RequireAuthorization();
         }
     }
 }

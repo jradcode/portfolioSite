@@ -175,9 +175,11 @@ namespace PortfolioSite.Api.Endpoints
                 }
             }).DisableAntiforgery().RequireAuthorization(); // Essential for multipart/form-data in Minimal APIs
 
+
+            
             var resumeGroup = app.MapGroup("/api/resume");
             // Use a generic internal name so you NEVER have to change this code again
-            const string fileName = "Web-Dev-Resume-2026.pdf";
+            const string fileName = "current-resume.pdf";
 
             resumeGroup.MapGet("/download", (IWebHostEnvironment env) =>
             {
@@ -188,7 +190,7 @@ namespace PortfolioSite.Api.Endpoints
 
                 // This is where you can keep the "Year" for the user's benefit
                 // You only change the '2026' here so the user sees a fresh date
-                return Results.File(filePath, "application/pdf", "Web-Dev-Resume-2026.pdf");
+                return Results.File(filePath, "application/pdf", "Jarrad-Web-Dev-Resume.pdf");
             });
 
             // Keep the POST just in case you ever want to build that Admin button!

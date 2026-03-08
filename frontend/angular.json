@@ -29,7 +29,7 @@
               }
             },
             "assets": [
-              "src/favicon.ico",
+              "src/myFavicon.svg",
               "src/assets"
             ],
             "styles": [

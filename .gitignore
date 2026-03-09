@@ -1,0 +1,41 @@
+# --- General / OS ---
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln.docstates
+
+# --- Frontend (Angular 21 + Node) ---
+# Use double asterisks to find these inside the /frontend folder
+**/node_modules/
+**/dist/
+**/.angular/
+**/.vitest/
+**/tmp/
+**/out-tsc/
+**/coverage/
+**/.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# --- Backend (.NET 10) ---
+**/bin/
+**/obj/
+**/.vs/
+**/App_Data/
+**/TestResults/
+# Ignore local user secrets/settings but keep the template
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# User Secrets (Standard .NET path is outside the project, but just in case)
+secrets.json
+
+# Environment files
+.env
+.env.*
+!.env.example

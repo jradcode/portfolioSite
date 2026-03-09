@@ -2,11 +2,12 @@
   "name": "portfolio-site",
   "version": "1.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+  "ng": "ng",
+  "start": "ng serve",
+  "build": "ng build",
+  "watch": "ng build --watch --configuration development",
+  "test": "ng test",
+  "deploy": "ng build --configuration production --base-href /portfolioSite/ && copy dist\\portfolio-site\\browser\\index.html dist\\portfolio-site\\browser\\404.html && npx angular-cli-ghpages --dir=dist/portfolio-site/browser"
   },
   "private": true,
   "dependencies": {

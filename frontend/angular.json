@@ -29,7 +29,8 @@
               }
             },
             "assets": [
-              "src/myFavicon.svg",
+              "src/myFavicon.ico",
+              "src/apple-touch-icon.png",
               "src/assets"
             ],
             "styles": [
@@ -39,13 +40,18 @@
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                }
-              ],
+            "budgets": [
+          {
+            "type": "initial",
+            "maximumWarning": "1mb",
+            "maximumError": "2mb"
+          },
+          {
+            "type": "anyComponentStyle",
+            "maximumWarning": "2kb",
+            "maximumError": "4kb"
+          }
+          ],
               "outputHashing": "all"
             },
             "development": {

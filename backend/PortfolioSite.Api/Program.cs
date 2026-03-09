@@ -35,11 +35,10 @@ builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAngular", policy =>
-        policy.WithOrigins("http://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+    options.AddPolicy("LocalDev", policy => policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("ProdGithub", policy => policy.WithOrigins("https://jradcode.github.io").AllowAnyHeader().AllowAnyMethod());
 });
+
 builder.Services.AddProblemDetails(); // Standardizes error responses
 
 builder.Services.ConfigureHttpJsonOptions(options => {
@@ -71,14 +70,16 @@ var app = builder.Build();
 // This enables serving files from the wwwroot/images folder
 app.UseStaticFiles();
 app.UseHttpsRedirection();
-app.UseCors("AllowAngular");
+
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("LocalDev");
     app.UseDeveloperExceptionPage();
 }
 else
 {
     // In production, catch all and return a clean JSON Problem Detail
+    app.UseCors("ProdGithub");
     app.UseExceptionHandler();
 }
 app.UseStatusCodePages(); // Handles 404s, etc., as JSON

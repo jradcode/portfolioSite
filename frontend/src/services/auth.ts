@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core'; // Added inject here
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { environment } from '../environments/environment';
 
 // Add this interface so TypeScript knows what "response" is
 interface LoginResponse {
@@ -13,7 +14,7 @@ interface LoginResponse {
 export class AuthService {
   private http = inject(HttpClient);
   private readonly TOKEN_KEY = 'portfolio_admin_token';
-  private readonly API_URL = 'https://localhost:7143/api/auth/login';
+  private readonly API_URL = `${environment.apiUrl}/auth/login`;
 
   #token = signal<string | null>(localStorage.getItem(this.TOKEN_KEY));
   isLoggedIn = computed(() => !!this.#token());

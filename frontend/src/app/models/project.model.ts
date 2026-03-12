@@ -7,7 +7,8 @@ export interface Project {
   name: string;
   description: string;
   images: string[];
-  githubUrl: string;
+  githubUrl?: string | null; //optional if code is private
+  isPrivate: boolean;
   technologies: string[];
   narrative: ProjectNarrative | null; // Use the interface here
 }

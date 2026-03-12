@@ -101,6 +101,17 @@ namespace PortfolioSite.Api.Endpoints
                 project.Name = inputProject.Name;
                 project.Description = inputProject.Description;
                 project.GithubUrl = inputProject.GithubUrl;
+                project.IsPrivate = inputProject.IsPrivate;
+                // Logic to clean the URL based on privacy status
+                if (project.IsPrivate)
+                {
+                    project.GithubUrl = null;
+                }
+                else
+                {
+                    project.GithubUrl = inputProject.GithubUrl;
+                }
+
                 project.Technologies = inputProject.Technologies;
                 project.Images = inputProject.Images;
 

@@ -144,6 +144,7 @@ export class ProjectForm {
       description: '', 
       images: [], 
       githubUrl: '', 
+      isPrivate: false,
       technologies: [],
       narrative: { 
         id: 0, 

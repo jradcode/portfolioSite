@@ -19,7 +19,10 @@ namespace PortfolioSite.Api.Models
         public string[] Images { get; set; } = [];
 
         [JsonPropertyName("githubUrl")]
-        public string GithubUrl { get; set; } = string.Empty;
+        public string? GithubUrl { get; set; } = null;
+
+        [JsonPropertyName("isPrivate")]
+        public bool IsPrivate { get; set; }
 
         [JsonPropertyName("technologies")]
         public string[] Technologies { get; set; } = [];

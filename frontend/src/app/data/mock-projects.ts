@@ -16,6 +16,7 @@ export const MOCK_PROJECTS: Project[] = [
       "assets/images/personApp/personAppAboutPage.png"
     ],
     githubUrl: "https://github.com/jradcode/person-app",
+    isPrivate: false,
     technologies: ["Angular 19", "Tailwind", "HTML", "Express.js", "Typescript", "JavaScript", "Prisma", "Postgres", "Neon"],
 
     narrative:
@@ -37,6 +38,7 @@ export const MOCK_PROJECTS: Project[] = [
       "assets/images/portfolioSite/portfolioSiteAboutPage.png"
     ],
     githubUrl: "https://github.com/jradcode/portfolioSite",
+    isPrivate: false,
     technologies: ["Angular 21", "TypeScript", "Tailwind", "HTML", "C# ASP.NET Core 10", "EF Core", "Postgres DB", "Neon"],
 
      narrative: 
@@ -59,6 +61,7 @@ export const MOCK_PROJECTS: Project[] = [
       "assets/images/mechanicTracker/mechanicTrackerSystemForm3.png"
     ],
     githubUrl: "https://github.com/jradcode/mechanic_Tracker",
+    isPrivate: false,
     technologies: ["Python", "Flask", "pipenv", "jinja2", "CSS", "HTML"], //change the project to the react one
 
     narrative: 

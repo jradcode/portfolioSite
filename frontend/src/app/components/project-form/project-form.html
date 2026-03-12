@@ -34,10 +34,33 @@
           </textarea>
         </div>
 
-        <div class="group">
-          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">GitHub Repository</label>
-          <input [ngModel]="project().githubUrl" (ngModelChange)="updateField('githubUrl', $event)" name="github" type="url" 
-                 class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 font-mono text-sm outline-none focus:border-blue-500/50">
+        <div class="group transition-all duration-300" [class.opacity-40]="project().isPrivate">
+          <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 group-focus-within:text-blue-400 transition-colors">
+            GitHub Repository
+            @if (project().isPrivate) { 
+              <span class="text-amber-500/60 lowercase italic ml-2 tracking-normal font-medium">(Locked for Proprietary)</span> 
+            }
+          </label>
+          <input [ngModel]="project().githubUrl" 
+                 (ngModelChange)="updateField('githubUrl', $event)" 
+                 [disabled]="project().isPrivate"
+                 name="github" 
+                 type="url" 
+                 class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 font-mono text-sm outline-none transition-all focus:border-blue-500/50 disabled:cursor-not-allowed"
+                 [placeholder]="project().isPrivate ? '---' : 'https://github.com/...'">
+        </div>
+
+        <div class="mt-4 flex items-center gap-3">
+          <input 
+            type="checkbox" 
+            [ngModel]="project().isPrivate" 
+            (ngModelChange)="updateField('isPrivate', $event)" 
+            name="isPrivate"
+            id="isPrivate"
+            class="w-4 h-4 rounded border-slate-800 bg-slate-900 text-blue-500 focus:ring-blue-500/50 cursor-pointer">
+          <label for="isPrivate" class="text-[10px] font-bold uppercase tracking-widest text-slate-400 cursor-pointer hover:text-slate-200 transition-colors">
+            Mark as Proprietary / Private Code
+          </label>
         </div>
       </div>
 

@@ -1,5 +1,86 @@
 
 <!-- Displays navbar under th header. Add-project and log out only shows up when logged in -->
+
+
+<nav class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+  <div class="container mx-auto px-2 sm:px-4 h-16 flex items-center justify-between gap-2">
+    
+    <div class="hidden lg:flex flex-1"></div>
+
+    <div class="flex items-center space-x-2 sm:space-x-6 overflow-x-auto no-scrollbar py-2 shrink-0">
+      <a routerLink="/home" 
+         routerLinkActive="text-blue-600 border-b-2 border-blue-600" 
+         [routerLinkActiveOptions]="{exact: true}"
+         class="text-[11px] sm:text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 whitespace-nowrap">
+        Home
+      </a>
+      <a routerLink="/about" 
+         routerLinkActive="text-blue-600 border-b-2 border-blue-600"
+         class="text-[11px] sm:text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 whitespace-nowrap">
+        About
+      </a>
+      <a routerLink="/resume"
+         routerLinkActive="text-blue-600 border-b-2 border-blue-600"
+         class="text-[11px] sm:text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 whitespace-nowrap">
+        Resume
+      </a>
+    </div>
+
+    <div class="flex flex-1 justify-end items-center space-x-1.5 sm:space-x-3">
+      
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/add-project"
+           class="flex items-center gap-1.5 rounded-full bg-emerald-50 p-2 sm:px-4 sm:py-2 text-[10px] font-bold text-emerald-700 hover:bg-emerald-600 hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-4 w-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span class="hidden md:inline">Add Project</span>
+        </a>
+
+        <input #fileInput type="file" (change)="onFileSelected($event)" accept=".pdf" class="hidden">
+        <button (click)="fileInput.click()" 
+                class="flex items-center gap-1.5 rounded-full bg-amber-50 p-2 sm:px-3 text-[10px] font-bold text-amber-700 hover:bg-amber-600 hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+          </svg>
+        </button>
+
+        <button (click)="onLogout()"
+                class="rounded-full border border-slate-200 bg-white p-2 sm:px-4 text-[10px] font-bold text-slate-500 hover:bg-red-50 hover:text-red-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-4 w-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3-3H9m12 0l-3-3m3 3l-3 3" />
+          </svg>
+        </button>
+
+      } @else {
+        <a routerLink="/login" 
+          class="group flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[10px] sm:text-xs font-bold text-slate-600 hover:border-blue-400 hover:bg-white">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-3 w-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          <span>Admin</span>
+        </a>
+      }
+
+      <a [href]="resumeUrl()"
+         target="_blank"
+         class="flex items-center justify-center rounded-full bg-blue-50 p-2 sm:px-4 sm:py-2 text-[10px] font-bold text-blue-700 hover:bg-blue-600 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12l4.5 4.5m0 0l4.5-4.5M12 3v13.5" />
+        </svg>
+        <span class="hidden sm:inline ml-1.5">PDF</span> 
+      </a>
+      
+      <a href="https://github.com/jradcode" target="_blank" 
+         class="rounded-lg bg-slate-800 px-2.5 py-2 text-[10px] font-semibold text-white hover:bg-slate-700">
+        GH
+      </a>
+    </div>
+
+  </div>
+</nav>
+
+<!-- OLD CODE
 <nav class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
   <div class="container mx-auto px-4 h-16 flex items-center justify-between">
     
@@ -17,7 +98,7 @@
          class="text-xs sm:text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 whitespace-nowrap">
         About Me
       </a>
-      <!--This links to the resume page -->
+
       <a routerLink="/resume"
          routerLinkActive="text-blue-600 border-b-2 border-blue-600"
          class="text-xs sm:text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 whitespace-nowrap">
@@ -83,6 +164,6 @@
         GitHub
       </a>
     </div>
-
   </div>
 </nav>
+-->

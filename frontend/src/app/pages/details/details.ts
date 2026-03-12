@@ -25,6 +25,8 @@ export class details implements AfterViewInit {
 
   project = signal<Project | undefined>(undefined);
 
+  loading = signal<boolean>(true);
+
   //Process images: Remains a computed, but now reacts to 'project' signal
   fullImageUrls = computed(() => {
     const proj = this.project();
@@ -60,16 +62,19 @@ export class details implements AfterViewInit {
     effect(() => {
       const numericId = Number(this.id());
       if (numericId) {
+        this.loading.set(true);
         this.projectService.fetchProjectById(numericId)
           .pipe(first()) // Automatically unsubs after one emission
           .subscribe({
             next: (fullProject) => {
               console.log('Full Project Loaded with Narrative:', fullProject);
               this.project.set(fullProject);
+              this.loading.set(false);
             },
             error: (err) => {
               console.error('Error fetching project details:', err);
               this.project.set(undefined);
+              this.loading.set(false);
             }
           });
       }
